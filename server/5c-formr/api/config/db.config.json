@@ -1,0 +1,33 @@
+
+{
+  "MySQL_LOCAL_RAUTH" : {
+
+    "HOST"     : "localhost",
+    "USER"     : "root",
+    "PASSWORD" : "IO.usr216",
+    "DB"       : "rauth",
+    "DIALECT"  : "mysql",
+    "POOL": {
+      "max"    : 5,
+      "min"    : 0,
+      "acquire": 30000,
+      "idle"   : 10000
+      }
+    }
+
+, "MySQL_LOCAL_WORLD" : {
+
+    "HOST"     : "localhost",
+    "USER"     : "root",
+    "PASSWORD" : "IO.usr216",
+    "DB"       : "world",
+    "DIALECT"  : "mysql",
+    "POOL": {
+      "max"    : 5,
+      "min"    : 0,
+      "acquire": 30000,
+      "idle"   : 10000
+      }
+    }
+
+}

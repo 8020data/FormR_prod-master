@@ -1,0 +1,29 @@
+{
+  "name": "formr-server3-5s-formr",
+  "version": "0.385.04",
+  "description": "React Admin Multi DB Client App (app5s)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "node server.js",
+    "client": "cd ..\\..\\client\\5s-formr && npm start",
+    "both": "concurrently \"npm start\" \"npm run client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "authentication",
+    "bcryptjs",
+    "express",
+    "jwt",
+    "mssql",
+    "nodejs",
+    "rest",
+    "sequelize"
+  ],
+  "author": "8020 Data",
+  "license": "ISC",
+  "dependencies": {}
+}
+
+
