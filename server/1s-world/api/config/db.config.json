@@ -4,7 +4,7 @@
 
     "HOST"     : "localhost",
     "USER"     : "root",
-    "PASSWORD" : "IO.usr216",
+    "PASSWORD" : "FormR!1234",
     "DB"       : "world",
     "DIALECT"  : "mysql",
     "POOL": {
