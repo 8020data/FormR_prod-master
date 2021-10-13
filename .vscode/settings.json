@@ -3,6 +3,7 @@
   , "chrome.profileDir": "C:/My/Data/chrome/profile"
   , "docsify.port" : 55000
   , "typescript.validate.enable": false
+  , "files.associations": { "*.njs": "javascript" }
 
   , "terminal.integrated.profiles.windows": 
      { "PowerShell": { "source": "PowerShell", "icon": "terminal-powershell" }
