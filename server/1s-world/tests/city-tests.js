@@ -5,7 +5,7 @@
 
        var  aHost    = 'http://localhost:50251'
 
-            nDoTests =  6
+            nDoTests =  5
 
 //          nDoTests =  1   // 1. Check if '/api/world/cities/model'         -> city.controllers.getModel 
 //          nDoTests =  2   // 2. Check if '/api/world/cities/1'             -> city.controllers.findOne 
@@ -17,7 +17,7 @@
 //          nDoTests =  8   // 8. Check if '/api/world/cities/delete'        -> city.controllers.deleteOne 
 
             nNewCityID    =   4079 + 1
-            aNewCityName  =  "Reston"
+            aNewCityName  =  "Atlanta"
 
 // ----------------------------------------------------------------------------------------------------------------
 

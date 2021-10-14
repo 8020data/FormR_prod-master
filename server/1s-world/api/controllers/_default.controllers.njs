@@ -74,13 +74,16 @@
                                              sndError( '',   `Search column ${aCol2Search} can not be empty for table ${aModel}.!`, res )
                    return;
                    }
-             const pData    =  Object.keys( req.body ).map( aCol => {                                       // .(10928.04.1 RAM Create record from request using .map)
-                   return                   req.body[ aCol ]
-                   } )
-//           const pData    = { }   
-//                             Object.keys( req.body ).forEach( aCol => {                                   //#.(10928.04.1 RAM Create record from request usin .forEach)
-//                 pData[ aCol ]          = req.body[ aCol ]
+
+//           const mData    =  Object.keys( req.body ).map( aCol => {                                       // .(10928.04.1 RAM Create record from request using .map)
+//                 return                   req.body[ aCol ]
 //                 } )
+                    
+             const pData    = { }   
+                               Object.keys( req.body ).forEach( aCol => {                                   //#.(10928.04.1 RAM Create record from request usin .forEach)
+                   pData[ aCol ]          = req.body[ aCol ]
+                   } )
+
                    pModel.create( pData )                                                                   // Create record in databse
                          .then(   pBody => {
                                              res.send( pBody ); } )

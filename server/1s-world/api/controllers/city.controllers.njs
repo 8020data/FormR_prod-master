@@ -28,7 +28,9 @@
 //                  Method      Route                                 Roles      Controller
 //                -----------  --------------------------------       -------    --------------------
                {       //      Order is important   
-//               'http.post    /api/${aTable}/                 ' : [ '      I', 'createOne           ' ]    // .(10326.02.1 RAM Make sure it has the same route as the _default route)
+//             , 'http.get     /api/${aTable}/                 ' : [ 'A O U E', 'findAll             ' ]    // Retrieve all table records
+                 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
+//             , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    // Retrieve schema model       // .(10905.08.1 RAM).(10918.04.1 RAM Order is important)
                   }
 //      --------------------------------------------------------------------------------------------------
 
@@ -47,11 +49,11 @@
              {  Name        :  req.body.Name                                                                //  Should names be lowercase 
              ,  CountryCode :  req.body.CountryCode
              ,  District    :  req.body.District
-             ,  Population  :  req.body.Population
+//           ,  Population  :  req.body.Population
                 };
 
             pModel.create( pData )
-                  .then(   pData => {
+                  .then(   pBody => {
                                     res.send( pBody ); } )
                   .catch(   pErr => {
                             var  pMsg = { message: ` ** Error occurred while creating a record for table ${aModel}.`, error: fmtObj(pErr).replace( /[\n]/g, '\n  ---' ) }
