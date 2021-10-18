@@ -79,14 +79,14 @@
 //                 return                   req.body[ aCol ]
 //                 } )
                     
-             const pData    = { }   
+             const pReqBody = { }                                                                           // .(11018.01.1 RAM Changed name of var: pData to pReqBody)
                                Object.keys( req.body ).forEach( aCol => {                                   //#.(10928.04.1 RAM Create record from request usin .forEach)
-                   pData[ aCol ]          = req.body[ aCol ]
+                   pReqBody[ aCol ]       = req.body[ aCol ]                                                // .(11018.01.2)
                    } )
 
-                   pModel.create( pData )                                                                   // Create record in databse
-                         .then(   pBody => {
-                                             res.send( pBody ); } )
+                   pModel.create( pReqBody )                                                                // Create record in database .(11018.01.3)
+                         .then(   pResult => {                                                              // .(11018.01.3 RAM Changed name of var: pBody to pResult)
+                                             res.send( pResult ); } )
                          .catch(  pErr  => {
                                              sndError( pErr, `Error occurred while creating a record for table ${aModel}.`, res ) } )
             } // eof `${aFName}.createOne`

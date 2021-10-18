@@ -29,7 +29,7 @@
 //                -----------  --------------------------------       -------    --------------------
                {       //      Order is important   
 //             , 'http.get     /api/${aTable}/                 ' : [ 'A O U E', 'findAll             ' ]    // Retrieve all table records
-                 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
+//               'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
 //             , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    // Retrieve schema model       // .(10905.08.1 RAM).(10918.04.1 RAM Order is important)
                   }
 //      --------------------------------------------------------------------------------------------------
