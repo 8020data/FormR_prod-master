@@ -301,9 +301,9 @@
                   pCondition[ aCol ] = { [Op.like]: `${ pFilter[ aCol ] }%` } 
                   } )
                   }                                                                                                   // .(11019.02.1 End)
-              var mRange    =  ( req.query.range || '').replace( /[\[\]]/g,  '' ).split( ',' )
+              var mRange    =  ( req.query.range || '' ).replace( /[\[\]]/g,  '' ).split( ',' )
               
-              var mSort     =  ( req.query.sort  || '').replace( /[\[\]"]/g, '' ).split( ',' )                        // .(10110.04.1 RAM e.g. '["username","ASC"]')
+              var mSort     =  ( req.query.sort  || '' ).replace( /[\[\]"]/g, '' ).split( ',' )                       // .(10110.04.1 RAM e.g. '["username","ASC"]')
               var mOrder    =  ( req.query.sort ) ? [ mSort ] : [ ]                                                   // .(10119.01.1)
               if (mOrder.length >= 1) {
 //                 mOrder[0][0] = mOrder[0][0].replace( /^id$/i, 'ID' )                                               //#.(10331.03.1 RAM Sort ID field is not capitalized correctly).(10418.07.1)
