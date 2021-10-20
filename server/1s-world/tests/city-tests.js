@@ -5,16 +5,16 @@
 
        var  aHost    = 'http://localhost:50251'
 
-            nDoTests =  5
+            nDoTests =  6
 
-//          nDoTests =  1   // 1. Check if '/api/world/cities/model'         -> city.controllers.getModel 
-//          nDoTests =  2   // 2. Check if '/api/world/cities/1'             -> city.controllers.findOne 
-//          nDoTests =  3   // 3. Check if '/api/world/cities'               -> city.controllers.findAll 
-//          nDoTests =  4   // 4. Check if '/api/world/cities/?range=[10,19] -> city.controllers.findMany with range
-//          nDoTests =  5   // 5. Check if '/api/world/cities'               -> city.controllers.createOne 
-//          nDoTests =  6   // 6. Check if '/api/world/cities/?filter={}     -> city.controllers.findMany with filter
-//          nDoTests =  7   // 7. Check if '/api/world/cities'               -> city.controllers.updateOne 
-//          nDoTests =  8   // 8. Check if '/api/world/cities/delete'        -> city.controllers.deleteOne 
+//          nDoTests =  1   // 1. Check city.controllers.getModel        at '/api/world/cities/model'          
+//          nDoTests =  2   // 2. Check city.controllers.findOne         at '/api/world/cities/1'              
+//          nDoTests =  3   // 3. Check city.controllers.findAll         at '/api/world/cities'                
+//          nDoTests =  4   // 4. Check city.controllers.findMany.range  at '/api/world/cities/?range=[10,19]  
+//          nDoTests =  5   // 5. Check city.controllers.createOne       at '/api/world/cities'                
+//          nDoTests =  6   // 6. Check city.controllers.findMany.filter at '/api/world/cities/?filter={}      
+//          nDoTests =  7   // 7. Check city.controllers.updateOne       at '/api/world/cities'                
+//          nDoTests =  8   // 8. Check city.controllers.deleteOne       at '/api/world/cities/delete'         
 
             nNewCityID    =   4079 + 1
             aNewCityName  =  "Atlanta"
@@ -117,17 +117,23 @@
       if (doTest( 6, __filename )) {   
 
        var  aRoute          = '/api/world/cities'
-       var  aData           = `?filter={Name:"{aNewCityName}"}` 
-       var  aData           = `?filter={Name:"Kabul"}`                         // Case is important
+
+//     var  aData           = '?Name=Provo'                                    // .(11018.05.1 RAM This should work)
+//    var  aData           = '?Name=Pro'                                      // .(11018.05.1 RAM This should work)
+//     var  aData           = `?filter={Name:"Pro"}`                           // Case is important
+//     var  aData           = `?filter={Name: Pro, CountryCode: USA }`         // Fails: unexpected token
+       var  aData           = `?filter={Name:"Pro",CountryCode:"USA"}`         // Quotes are required
+//     var  aData           = `?filter={Name:"{aNewCityName}"}` 
 
             jstFns.sndAPI(    'GET',    `${aHost}${aRoute}`, aData )
 
 //    ------------------------------------------------------------------------
-      } // eof Test5
+      } // eof Test6
 // ----------------------------------------------------------------------------------------------------------------
 
+// 7. Check if '/api/world/cities' -> city.controllers.updateOne works
 //    ----------------------------------------------------------------------------------------
-      if (doTest( 7, __filename )) {   // 7. Check if '/api/world/cities' -> city.controllers.updateOne works
+      if (doTest( 7, __filename )) {   
 
        var  aRoute          = '/api/world/cities'
 
@@ -141,8 +147,9 @@
       } // eof Test7
 // ----------------------------------------------------------------------------------------------------------------
 
+// 8. Check if '/api/world/cities/delete' -> city.controllers.deleteOne works
 //    ----------------------------------------------------------------------------------------
-      if (doTest( 8, __filename )) {   // 8. Check if '/api/world/cities/delete' -> city.controllers.deleteOne works
+      if (doTest( 8, __filename )) {   
 
       var  aRoute          = `/api/world/cities/${nNewCityID}`
 
@@ -156,7 +163,7 @@
            }
       } // eof testRoute_model
 //    ------------------------------------------------------------------------
-      } // eof Test7
+      } // eof Test8
 // ----------------------------------------------------------------------------------------------------------------
 //  eof Tests
 // -----------------------------------------------------------------------------------------------------------------------------

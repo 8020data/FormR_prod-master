@@ -25,7 +25,7 @@
                , 'http.get     /api/${aTable}/                 ' : [ 'A O U E', 'findAll             ' ]    // Retrieve all table records
                , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    // Retrieve schema model       // .(10905.08.1 RAM).(10918.04.1 RAM Order is important)
                , 'http.get     /api/${aTable}/test/            ' : [ '      I', 'test                ' ]    // Display controller filename // .(10917.09.7 RAM Let's test this controller).(10918.04.2)
-//             , 'http.get     /api/${aTable}/findMany/:ids    ' : [ 'A O U -', 'findMany            ' ]    // Retrieve many table records with filter
+               , 'http.get     /api/${aTable}/findMany/:ids    ' : [ 'A O U -', 'findMany            ' ]    // Retrieve many table records with filter
 //             , 'http.put     /api/${aTable}/updateMany/:ids  ' : [ 'A O - -', 'updateMany          ' ]    // Update many table records with ids
 //             , 'http.delete  /api/${aTable}/deleteMany/:ids  ' : [ 'A O - -', 'deleteMany          ' ]    // Delete all table records with id = ids
 //             , 'http.delete  /api/${aTable}/deleteAll/       ' : [ 'A - - -', 'deleteAll           ' ]    // Retrieve all published table records
@@ -38,6 +38,7 @@
         var pControllers    =  function( aModel, aDBSN ) {                                                  // .(10328.01.8 RAM Major change. Was: pControllers =)
 
         var pDB             =  require( '../models/index.js' )                                              // .(10328.01.4 Beg RAM Needed now) 
+        var aTable          =  aModel                                                                       // .(11019.01.5 RAM Need this below)
         var pModel          =  pDB[ aModel ]                                                                // .(10328.02.6 RAM Each model is defined in pDB).(10328.01.5).(10414.02.8)
         var aFName          = `${aModel}.controllers`
         var aPrimaryCol     = (pModel && pModel.Primary) || 'id'                                            // .(10328.01.7 End).(10328.03.2 RAM In case aModel is undefined).(10418.07.1 RAM Added Default)
@@ -79,7 +80,7 @@
 //                 return                   req.body[ aCol ]
 //                 } )
                     
-             const pReqBody = { }                                                                           // .(11018.01.1 RAM Changed name of var: pData to pReqBody)
+               var pReqBody = { }                                                                           // .(11018.01.1 RAM Changed name of var: pData to pReqBody)
                                Object.keys( req.body ).forEach( aCol => {                                   //#.(10928.04.1 RAM Create record from request usin .forEach)
                    pReqBody[ aCol ]       = req.body[ aCol ]                                                // .(11018.01.2)
                    } )
@@ -97,7 +98,7 @@
 //           const id       =  req.params.id;                                                               //#.(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
 //           const id       =  req.params[ 'id' ];                                                          //#.(10331.02.1 RAM Express or Sequelize's id from route /:id)
 //           const id       =  req.params[ aPrimaryCol ];                                                   //#.(10326.06.1 RAM Need this).(10331.02.1).(10906.06.1)
-             const id       =  req.params[ aPrimaryCol.toLowerCase() ];                                     // .(10906.06.1 RAM Need this).(10331.02.1).(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
+               var id       =  req.params[ aPrimaryCol.toLowerCase() ];                                     // .(10906.06.1 RAM Need this).(10331.02.1).(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
 
                    pModel.findByPk( id )
                          .then(   pBody => {           pRow    =  pBody.dataValues                          // .(10906.05.1 RAM Just send the actual values for React-Admin )
@@ -110,60 +111,39 @@
 
           , findAll         :  function findAll(     req, res ) { trace( `${aModel}.findAll`)
 
-             const pCondition   = { }
-             const aSearchVal   =  req.query[ aColToSearch || null ];                                                 // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
-               if (aSearchVal) {                                                                                      // .(10418.03.5)
-                   pCondition[ aCol2Search ]  = { [Op.like]: `%${aSearchVal}%` }                                      // .(10418.03.6)
-                   }
-/*             var pOptions   = { where: pCondition, order: [] }                                                      // .(10119.01.2 RAM Was: [ mSort ])
+              var  pArgs    =  getArgs( req )                                                               // .(11019.01.1 RAM Move code to this function)           
 
-                   pModel.findAll( pOptions )
-                         .then(   pBody => {
-                                             res.send( pBody ); } )
-                         .catch(  pErr  => {
-                               res.status( 500 ).send( { message: ` ** Error retrieving all records for table ${aModel}.` } );
-                               } );
-*/
-              var aTable    =    req.originalUrl.replace( /\?.+$/, '').replace( /\/api\//, '')                        // .(10107.01.1 Beg RAM Ass Sort, range and filter)
-//            var aTable    =    aModel                                                                               // .(10330.03.1 RAM Use the React-Admin table name. First letter is capitalized)
+//                 pModel.findAndCountAll( { offset: nOffset, limit: nLimit, ...pOptions } )                          //#.(10111.01.2).(11019.01.2)
+                   pModel.findAndCountAll(   pArgs   )                                                                // .(10111.01.2).(11019.01.2)
 
-              var  aFilter  =    req.query.filter                                                                     // .(10330.02.1 RAM Not sure why React-Admin is using filter vs. pCondition)
+                         .then(  pResult => {                                                                         // .(11018.01.4)
 
-              var mRange    =  ( req.query.range || '').replace( /[\[\]]/g,  '' ).split( ',' )
-              var mSort     =  ( req.query.sort  || '').replace( /[\[\]"]/g, '' ).split( ',' )                        // .(10110.04.1 RAM e.g. '["username","ASC"]')
-              var mOrder    =  ( req.query.sort ) ? [ mSort ] : [ ]                                                   // .(10119.01.1)
-              if (mOrder.length >= 1) {
-//                 mOrder[0][0] = mOrder[0][0].replace( /^id$/i, 'ID' )                                               //#.(10331.03.1 RAM Sort ID field is not capitalized correctly).(10418.07.1)
-                   mOrder[0][0] = mOrder[0][0].replace( /^id$/i, aPrimaryCol || 'id' )                                // .(10331.03.1 RAM Sort ID field is not capitalized correctly).(10418.07.1 RAM Let's try this)
-//                 mOrder[0][0] = mOrder[0][0].substr(0,1).toUpperCase() + mOrder[0][0].substr(1)                     // .(10331.03.1 RAM Sort field is not capitalized correctly)
-                   }
-              var pOptions  =  { where: pCondition, order: mOrder }                                                   // .(10119.01.2 RAM Was: [ mSort ])
-              var nOffset   =  ( mRange[0] ||  0 ) * 1                                                                // .(10111.01.1 RAM Support Pagination)
-              var nLimit    =  ( mRange[1] || 99 ) * 1; nLimit = (nLimit - nOffset) + 1                               // .(10111.01.2)
-
-                   pModel.findAndCountAll( { offset: nOffset, limit: nLimit, ...pOptions } )                          // .(10111.01.2)
-
-                         .then(  pBody => {
-
-                            var  pBodyRows =  pBody.rows.map( pRow => { var pNewRow = {} //{ ... pRow }; 
-                                 pNewRow              =    pRow.dataValues                                            // .(10418.04.1 RAM This seems more like it, except for maybe the ID column )
-                                 pNewRow.id           =    pRow.dataValues[ aPrimaryCol ]                             // .(10418.09.1 Required by React-Admiin)
+                            var  pBodyRows =  pResult.rows.map( pRow => { var pNewRow = {} //{ ... pRow };            // .(11018.01.5)
+                                 pNewRow          =    pRow.dataValues                                                // .(10418.04.1 RAM This seems more like it, except for maybe the ID column )
+                                 pNewRow.id       =    pRow.dataValues[ aPrimaryCol ]                                 // .(10418.09.1 Required by React-Admiin)
                                  return pNewRow 
-                                 } )  
-                            var  nBeg  =  mRange[0] || 0, nEnd = mRange[1] || pBody.rows.length, nCnt = pBody.count   // .(10103.01.3 RAM Get range counts)
-                                 res.setHeader( 'Access-Control-Expose-Headers', 'Content-Range'     );               // .(10103.05.1 RAM Allow use of 'Content-Range' Header)
-                                 res.setHeader( 'Accept-Ranges', `${aTable}`                         );               // .(10103.01.4 RAM Both are require for browser, ie. Chrome)
-                                 res.setHeader( 'Content-Range', `${aTable} ${nBeg}-${nEnd}/${nCnt}` );               // .(10103.01.5 RAM Send Header)
-//                               res.send(       pBody.rows     )                                                     // .(10111.01.3 RAM added data.rows)
-                                 res.send(       pBodyRows      )                                                     // .(10111.01.3 RAM added data.rows)
-//                               res.send( { data: pBody.rows } )                                                     // .(10331.01.1 RAM Will this work?)
-                                 } )
-                         .catch( pErr => {
-//                             res.status( 500) .send( { message: pErr.message || `Some error occurred while retrieving all records for table ${aModel}.` } );  
-                            var  pMsg =  { message: ` ** Error retrieving all records for table ${aModel}.`, error: fmtObj(pErr).replace( /[\n]/g, '\n  ---' ) }
+
+                                 } )   // eol pResult.rows.map( pRow => { ...; return pNewRow } )
+
+                            var  nCnt  =  pResult.count // or pResult.rows.length                                     // .(11019.01.3)
+//                          var  nBeg  =  mRange[0] || 0, nEnd =  mRange[1] || pResult.rows.length, nCnt = pResult.count   //#.(10103.01.3 RAM Get range counts).(11018.01.6).(11019.01.4)
+                            var  nBeg  =  pArgs.offset,   nEnd =  pArgs.limit || nCnt                                 // .(11019.01.4 RAM Not sure about nEnd vs nCnt)
+                                 res.setHeader(   'Access-Control-Expose-Headers', 'Content-Range'     );             // .(10103.05.1 RAM Allow use of 'Content-Range' Header)
+                                 res.setHeader(   'Accept-Ranges', `${aTable}`                         );             // .(10103.01.4 RAM Both are require for browser, ie. Chrome)
+                                 res.setHeader(   'Content-Range', `${aTable} ${nBeg}-${nEnd}/${nCnt}` );             // .(10103.01.5 RAM Send Header)
+//                               res.send(         pBody.rows     )                                                   // .(10111.01.3 RAM Added data.rows)
+//                               res.send( { data: pResult.rows } )                                                   // .(10331.01.1 RAM Will this work?)
+                                 res.send(         pBodyRows      )                                                   // .(10111.01.3 RAM Used pBodyRows)
+
+                                 } )   // eof .then ( pResult => { ...; send( pBodyRows ) } )
+
+                         .catch( pError => {
+//                               res.status( 500) .send( { message: pError.message || `Some error occurred while retrieving all records for table ${aModel}.` } );  
+                            var  pMsg =  { message: ` ** Error retrieving all records for table ${aModel}.`, error: fmtObj(pError).replace( /[\n]/g, '\n  ---' ) }
                                  console.log( fmtObj( pMsg ) ); // res.status( 500 ).send( pMsg );                    //#.(10418.06.1 RAM I didn't get the message).(10917.05.1)
                                  sndError( pMsg.message );                                                            // .(10917.05.1 RAM)
-                               } );
+
+                               } );    // eof .catch( pError => { ...; sendError( pMsg.message ) } ) 
 
             } // eof `${aFName}.findAll`
 //          ----------------------------------------------------------------------------------
@@ -294,6 +274,51 @@
 
 //          ------------------------------------------------------------------
 
+  function  getArgs( req ) {                                                                                // .(11019.01.3 Beg RAM Added)            
+
+               var pCondition   = { }
+             const aSearchVal   =  req.query[ aColToSearch || null ];                                                 // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
+               if (aSearchVal) {                                                                                      // .(10418.03.5)
+                   pCondition[ aColToSearch ]  = { [Op.like]: `%${aSearchVal}%` }                                     // .(10418.03.6)
+                   }
+/*             var pOptions   = { where: pCondition, order: [] }                                                      // .(10119.01.2 RAM Was: [ mSort ])
+
+                   pModel.findAll( pOptions )
+                         .then(   pBody => {
+                                             res.send( pBody ); } )
+                         .catch(  pErr  => {
+                               res.status( 500 ).send( { message: ` ** Error retrieving all records for table ${aModel}.` } );
+                               } );
+*/
+//            var aTable    =    req.originalUrl.replace( /\?.+$/, '').replace( /\/api\//, '')                        // .(10107.01.1 Beg RAM Ass Sort, range and filter)
+//            var aTable    =    aModel                                                                               // .(10330.03.1 RAM Use the React-Admin table name. First letter is capitalized)
+
+              var aFilter   =    req.query.filter || ''                                                               // .(10330.02.1 RAM Not sure why React-Admin is using filter vs. pCondition).(11019.01.3 RAM Needed above)
+              if (aFilter.match( /\{.+\}/ )) {                                                                        // .(11019.02.1 Beg RAM Added) 
+//                pFilter   =    JSON.parse(aFilter)                   
+                  pFilter   =    eval( `pFilter = ${aFilter}` )  
+                  pCondition= { }; Object.keys( pFilter ).forEach( aCol => { 
+                  pCondition[ aCol ] = { [Op.like]: `${ pFilter[ aCol ] }%` } 
+                  } )
+                  }                                                                                                   // .(11019.02.1 End)
+              var mRange    =  ( req.query.range || '').replace( /[\[\]]/g,  '' ).split( ',' )
+              
+              var mSort     =  ( req.query.sort  || '').replace( /[\[\]"]/g, '' ).split( ',' )                        // .(10110.04.1 RAM e.g. '["username","ASC"]')
+              var mOrder    =  ( req.query.sort ) ? [ mSort ] : [ ]                                                   // .(10119.01.1)
+              if (mOrder.length >= 1) {
+//                 mOrder[0][0] = mOrder[0][0].replace( /^id$/i, 'ID' )                                               //#.(10331.03.1 RAM Sort ID field is not capitalized correctly).(10418.07.1)
+                   mOrder[0][0] = mOrder[0][0].replace( /^id$/i, aPrimaryCol || 'id' )                                // .(10331.03.1 RAM Sort ID field is not capitalized correctly).(10418.07.1 RAM Let's try this)
+//                 mOrder[0][0] = mOrder[0][0].substr(0,1).toUpperCase() + mOrder[0][0].substr(1)                     // .(10331.03.1 RAM Sort field is not capitalized correctly)
+                   }
+              
+              var pOptions  =  { where: pCondition, order: mOrder }                                                   // .(10119.01.2 RAM Was: [ mSort ])
+              var nOffset   =  ( mRange[0] ||  0 ) * 1                                                                // .(10111.01.1 RAM Support Pagination)
+              var nLimit    =  ( mRange[1] || 99 ) * 1; nLimit = (nLimit - nOffset) + 1
+
+           return { offset: nOffset, limit: nLimit, ...pOptions }                                           // .(11019.01.4)
+            }                                                                                               // .(11019.01.3 End) 
+//          ------------------------------------------------------------------
+              
   function  sndError( pErr, aMsg, res ) {                                                                   // .(10418.06.2 RAM Beg Turn itinto a function)
        var  pMsg = { message: aMsg };  
         if (pErr)  { pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
