@@ -3,9 +3,10 @@
 
 // -----------------------------------------------------------------------------------------------------------------------------
 
-       var  aHost    = 'http://localhost:50251'
-
             nDoTests =  6
+
+       var  aHost    = 'http://localhost:50251'
+       var  aRoute   =                       '/api/world/cities'
 
 //          nDoTests =  1   // 1. Check city.controllers.getModel        at '/api/world/cities/model'          
 //          nDoTests =  2   // 2. Check city.controllers.findOne         at '/api/world/cities/1'              
@@ -26,7 +27,6 @@
       if (doTest( 1, __filename )) {   
 
       var  aRoute          = '/api/world/cities/model'
-      var  aRoute          = '/api/world/countries/model'
 
                     testRoute_model( 'GET', aRoute )
 
