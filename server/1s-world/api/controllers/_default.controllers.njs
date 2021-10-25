@@ -95,10 +95,10 @@
 
           , findOne         :  function findOne(     req, res ) { trace( `${aModel}.findOne`)               // .(10918.03.1 RAM Was getOne)
 
-//           const id       =  req.params.id;                                                               //#.(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
-//           const id       =  req.params[ 'id' ];                                                          //#.(10331.02.1 RAM Express or Sequelize's id from route /:id)
-//           const id       =  req.params[ aPrimaryCol ];                                                   //#.(10326.06.1 RAM Need this).(10331.02.1).(10906.06.1)
-               var id       =  req.params[ aPrimaryCol.toLowerCase() ];                                     // .(10906.06.1 RAM Need this).(10331.02.1).(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
+               var id       =  req.params.id;                                                               // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
+//             var id       =  req.params[ 'id' ];                                                          //#.(10331.02.1 RAM Express or Sequelize's id from route /:id)
+//             var id       =  req.params[ aPrimaryCol ];                                                   //#.(10326.06.1 RAM Need this).(10331.02.1).(10906.06.1)
+//             var id       =  req.params[ aPrimaryCol.toLowerCase() ];                                     //#.(10906.06.1 RAM Need this).(10331.02.1).(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
 
                    pModel.findByPk( id )
                          .then(   pBody => {           pRow    =  pBody.dataValues                          // .(10906.05.1 RAM Just send the actual values for React-Admin )
@@ -293,7 +293,7 @@
 //            var aTable    =    req.originalUrl.replace( /\?.+$/, '').replace( /\/api\//, '')                        // .(10107.01.1 Beg RAM Ass Sort, range and filter)
 //            var aTable    =    aModel                                                                               // .(10330.03.1 RAM Use the React-Admin table name. First letter is capitalized)
 
-              var aFilter   =    req.query.filter || ''                                                               // .(10330.02.1 RAM Not sure why React-Admin is using filter vs. pCondition).(11019.01.3 RAM Needed above)
+              var aFilter   =    cleanURI(req.query.filter || '')                                                     // .(10330.02.1 RAM Not sure why React-Admin is using filter vs. pCondition).(11019.01.3 RAM Needed above).(1120.01.1 RAM Added clearURI)
               if (aFilter.match( /\{.+\}/ )) {                                                                        // .(11019.02.1 Beg RAM Added) 
 //                pFilter   =    JSON.parse(aFilter)                   
                   pFilter   =    eval( `pFilter = ${aFilter}` )  
@@ -318,7 +318,31 @@
            return { offset: nOffset, limit: nLimit, ...pOptions }                                           // .(11019.01.4)
             }                                                                                               // .(11019.01.3 End) 
 //          ------------------------------------------------------------------
-              
+
+  function  cleanURI( aURI ) {                                                                              // .(11020.01.1 RAM Added)   
+       try { 
+    return  decodeURI(aURI)    
+   } catch (e) {
+            aURI = aURI.replace( /%20/g, ' ' ).replace( /%21/g, '!' )
+            aURI = aURI.replace( /%22/g, '"' ).replace( /%27/g, "'" )
+            aURI = aURI.replace( /%23/g, '#' ).replace( /%23/g, "$" )
+            aURI = aURI.replace( /%25/g, '%' ).replace( /%26/g, "&" )
+            aURI = aURI.replace( /%2A/g, '*' ).replace( /%2B/g, '+' )
+            aURI = aURI.replace( /%2B/g, '+' ).replace( /%2D/g, '+' )
+            aURI = aURI.replace( /%2C/g, ',' ).replace( /%2E/g, '.' )
+            aURI = aURI.replace( /%28/g, '(' ).replace( /%29/g, ')' )
+            aURI = aURI.replace( /%3A/g, ':' ).replace( /%3B/g, ';' )
+            aURI = aURI.replace( /%3C/g, '<' ).replace( /%3E/g, '>' )
+            aURI = aURI.replace( /%3D/g, '=' ).replace( /%3F/g, '?' )
+            aURI = aURI.replace( /%7B/g, '{' ).replace( /%7D/g, '}' )
+            aURI = aURI.replace( /%5B/g, '[' ).replace( /%5D/g, ']' )
+            aURI = aURI.replace( /%5E/g, '^' ).replace( /%5F/g, '_' )
+            aURI = aURI.replace( /%2F/g, '/' ).replace( /%5C/g, '\\' )
+    return  aURI
+            }
+            }                                                                                               // .(11020.01.1 RAM Added)          
+//          ------------------------------------------------------------------
+
   function  sndError( pErr, aMsg, res ) {                                                                   // .(10418.06.2 RAM Beg Turn itinto a function)
        var  pMsg = { message: aMsg };  
         if (pErr)  { pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
