@@ -5,7 +5,7 @@
 
                  trace( 'setProjectName', 'FormR' )                        // .(10301.01.1 RAM Set project name for parsing function call stack)
 
-       var  aHost    =  'http://localhost:50716'
+       var  aHost    =  'http://localhost:50254'
 
        var  aRoute1  =  '/api/rauth/login'                                 // .(10909.01.7)
        var  aRoute2  =  '/api/users/admin'                                 // .(10311.04.1 RAM Was: api/test/..) 
