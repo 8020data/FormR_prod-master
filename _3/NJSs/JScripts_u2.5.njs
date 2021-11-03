@@ -457,6 +457,7 @@
           return pRes
         } catch( pErr ) {
                           onFailure( pErr, xNext )
+          return pErr.Error ? pErr: { Error: pErr }                                                           // .(11103.01.1 RAM Return error too)     
                           }
             } // eof sndAPI3                                                                                    // .(10402.05.1 End)
 //      -----------  =   ----------------------------
