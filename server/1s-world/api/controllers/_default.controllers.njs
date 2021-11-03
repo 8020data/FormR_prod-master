@@ -111,7 +111,7 @@
 
           , findAll         :  function findAll(     req, res ) { trace( `${aModel}.findAll`)
 
-              var  pArgs    =  getArgs( req )                                                               // .(11019.01.1 RAM Move code to this function)           
+              var  pArgs    =  getArgs( req, pModel )                                                                 // .(11019.01.1 RAM Move code to this function)           
 
 //                 pModel.findAndCountAll( { offset: nOffset, limit: nLimit, ...pOptions } )                          //#.(10111.01.2).(11019.01.2)
                    pModel.findAndCountAll(   pArgs   )                                                                // .(10111.01.2).(11019.01.2)
@@ -150,15 +150,16 @@
 
           , findMany        :  function findMany(    req, res ) { trace( `${aModel}.findMany`)
 
-             const aFilter  =  req.query.filter;
-             const mFilter  =  aFilter ? aFilter.split( /=/ ) : null; aField = mFilter ? mFilter[0] : null
-               var aClause  =  aField  ? { aField: { [ Op.like ]: `%${ mFilter[1] }%` } } : null;
+              pControllers_.findAll( req, res )                                                                       // .(11103.02.1 RAM Was: pController.findAll)
 
-                   pModel.findAll( { where: aClause } )
-                         .then(   pBody => {
-                                             res.send( pBody ); } )
-                         .catch(  pErr  => {
-                                            sndError( pErr, ` ** Error retrieving filter = '${aFilter}' for table ${aModel}.`, res ) } );
+//            const aFilter  =  req.query.filter;
+//            const mFilter  =  aFilter ? aFilter.split( /=/ ) : null; aField = mFilter ? mFilter[0] : null
+//              var aClause  =  aField  ? { aField: { [ Op.like ]: `%${ mFilter[1] }%` } } : null;
+//                  pModel.findAll( { where: aClause } )
+//                        .then(   pBody => {
+//                                            res.send( pBody ); } )
+//                        .catch(  pErr  => {
+//                                           sndError( pErr, ` ** Error retrieving filter = '${aFilter}' for table ${aModel}.`, res ) } );
             } // eof `${aFName}.findMany`
 //          ----------------------------------------------------------------------------------
 
@@ -178,7 +179,7 @@
 //                       .catch( pErr  => {
 //                                          sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
 */
-               var id       =    req.params.id;                                                                     // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
+               var id       =    req.params.id;                                                                       // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
 //             var id       =    req.params[ aPrimaryCol.toLowerCase() ];                                             // .(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
 
                var pBody    =    req.body
@@ -274,7 +275,7 @@
 
 //          ------------------------------------------------------------------
 
-  function  getArgs( req ) {                                                                                // .(11019.01.3 Beg RAM Added)            
+  function  getArgs( req, pModel ) {                                                                                  // .(11019.01.3 Beg RAM Added)            
 
                var pCondition   = { }
              const aSearchVal   =  req.query[ aColToSearch || null ];                                                 // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
