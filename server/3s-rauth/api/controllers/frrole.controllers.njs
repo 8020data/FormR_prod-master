@@ -62,19 +62,18 @@
 //          } // eof `${aFName}.getModel`
 //          ------------------------------------------------------------------
 
-          , createOne       :  function createOne( req, res ) { trace( `${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
+          , createOne       :  function createOne( req, res ) { trace( `${aModel}.createOne ${req.body.name}` )             // .(10315.12.1 Beg RAM Added)
 
-       if (!req.body[ aPrimaryCol ]) {                                                                          //  Validate request
-                               res.status(400).send( { message: "Primary column, ${aPrimaryCol}, can not be empty!" } );
-            return;
-            }
+//        if (!req.body[ aPrimaryCol ]) {                                                                               //#.(11103.04.1 Beg RAM Why is this required?)
+//                             res.status(400).send( { message: "Primary column, ${aPrimaryCol}, can not be empty!" } );
+//          return;                                                                                                         
+//          }                                                                                                               //#.(11103.04.1 End)
             
       const pBody           =                                                                                   //  Create one
 //           { id           :  req.body.id
              { name         :  req.body.name
-
-
-
+             , updatedAt    :  req.body.updatedAt                                                               //  .(11103.04.1 RAM Added. What is not given)
+             , createdAt    :  req.body.createdAt                                                               //  .(11103.04.2)                
 
 
                };

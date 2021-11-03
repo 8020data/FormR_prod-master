@@ -34,10 +34,10 @@
 //          --------------------------------------------------------------------------------
                                                                                              // .(10917.01.1 Beg RAM Move to admin.routes.njs)
    const    pUserControllers =  require( '../controllers/fruser.controllers.njs' );          // .(10319.05.2).(10328.06.2).(10331.03.2 RAM Changed file name)
-// const    pRoleControllers =  require( '../controllers/frrole.controllers.njs' );          // .(10319.05.3).(10328.06.3).(10331.03.3).(10917.04.1 RAM Not used in app3s)
+   const    pRoleControllers =  require( '../controllers/frrole.controllers.njs' );          // .(10319.05.3).(10328.06.3).(10331.03.3).(10917.04.1 RAM Not used in app3s).(11103.03.1 RAM Well, we want to test it)
 
             pTableRoutes     =  getControllers( pUserControllers, aShowEm )                  // .(10319.05.4).(10921.05.1 RAM Added aShowEm)
-//          pTableRoutes     =  getControllers( pRoleControllers, aShowEm )                  // .(10319.05.6).(10917.04.1).(10921.05.2)
+            pTableRoutes     =  getControllers( pRoleControllers, aShowEm )                  // .(10319.05.6).(10917.04.1).(10921.05.2).(11103.03.2)
 
             pRouter.use(        getAppRoutes( pTableRoutes ) )                               // .(10319.05.7)
 
