@@ -9,7 +9,7 @@
        var  aRoute   =                       '/api/world/countries'
 
        var  aFilter1 = 'USA'                                                  // Case doesn't seem to matter
-       var  aFilter2 = '?Code=USA'                                            // fails
+       var  aFilter2 = '?Name=United'                                         // fails
        var  aFilter3 = '?filter={Code:"USA"}'                                 // JSON Args
        var  aFilter4 = '?filter={Name:"United*"}'                             // LIKE ??
        var  aFilter5 = '?filter={Name:">United*"},{Code:""}'                  // LIKE ??

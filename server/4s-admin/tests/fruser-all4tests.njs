@@ -4,32 +4,41 @@
 
 //   -----  --------------  =  --------------------------------------------------------
 
-       var  aHost           = `http://localhost:50253`
+       var  aHost           = `http://localhost:50254`
        var  aRoute          = '/api/formr/users'
        var  aUserName       = 'suzee'
 
        var  pData1          =
              {  username    :  aUserName
              ,  email       : 'suzee.parker94@gmail.com'
+             ,  role        : 'User'
+//           ,  createdAt   : '2021-03-15T20:31:02.000Z'
+             ,  updatedAt   :  new Date
+                }
+
+       var  pData2          =
+             {  username    :  aUserName
+             ,  email       : 'suzee.parker94@gmail.com'
              ,  group       : 'Dept34'
              ,  password    : '1234'
              ,  active      : 'Yes'
-             ,  role        : 'User'
+             ,  role        : 'Admin'
              ,  passworddate:  addDate( 90 )
              ,  updatedAt   :  new Date
-//           ,  createdAt   : '2021-03-15T20:31:02.000Z'
-                }
 
-       var  pData2          =  pData1
-            pData2.role     = 'Admin'
-            pData2.updatedAt=  new Date
+                }            
 
-            doTest_Find(   aUserName ) 
-//          doTest_Create( aUserName, pData1 )       
-//          doTest_Find(   aUserName ) 
-//          doTest_Update( aUserName, pData2 )       
-//          doTest_Delete( aUserName )       
-//          doTest_Find(   aUserName ) 
+         doTests() 
+
+   async function doTests() {
+
+//   await doTest_Find(   aUserName ) 
+     await doTest_Create( aUserName, pData1 )       
+//   await doTest_Find(   aUserName ) 
+//   await doTest_Update( aUserName, pData2 )       
+//   await doTest_Delete( aUserName )       
+//   await doTest_Find(   aUserName ) 
+     }
 
 //   -----  --------------  =  --------------------------------------------------------
 
