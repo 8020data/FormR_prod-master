@@ -6,11 +6,11 @@
 //   ------------  =   --------------------------------------------------------
                          trace( 'setProjectName', 'FormR' )                           // .(10301.01.1 RAM Set project name for parsing function call stack)
 
-     var aHost    =  'http://localhost:50716'
+     var aHost    =  'http://localhost:50253'
 
      var aRoute   =  '/api/rauth/login'                                               // .(10909.01.5)
 
-     var pBody    = { 'username'     : 'robin1',
+     var pBody    = { 'username'     : 'robin4',
                       'password'     : '1234',
                        }
 
