@@ -1,11 +1,11 @@
 
-//          FormR     =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
-        var FormR     =  require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
-            FormR.init( _dirname, __filename );       //  FormR.help(); process.exit()                                    
+//       FormR     =   require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
+var FormR     =   require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
+FormR.init( __dirname, __filename );       //  FormR.help(); process.exit()                                    
 
                  trace( 'setProjectName', 'FormR' )                        // .(10301.01.1 RAM Set project name for parsing function call stack)
 
-       var  aHost    =  'http://localhost:50254'
+       var  aHost    =  'http://localhost:50253'
 
        var  aRoute1  =  '/api/rauth/login'                                 // .(10909.01.7)
        var  aRoute2  =  '/api/users/admin'                                 // .(10311.04.1 RAM Was: api/test/..) 
