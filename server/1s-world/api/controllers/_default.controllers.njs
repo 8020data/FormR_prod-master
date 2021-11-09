@@ -72,7 +72,7 @@
           , createOne       :  function createOne( req, res ) { trace( `${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
 
               if (!req.body[   aColToSearch ] ) {                                                           // Validate request .(10418.03.2 RAM Was: aPrimaryCol)
-                                             sndError( '',   `Search column ${aCol2Search} can not be empty for table ${aModel}.!`, res )
+                                             sndError( '',   `Search column ${aColToSearch} can not be empty for table ${aModel}.!`, res )  // .(11109.03.1 RAM Was: aCol2Search)
                    return;
                    }
 

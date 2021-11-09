@@ -28,17 +28,17 @@
 
                 }            
 
-         doTests() 
+            doTests() 
 
-   async function doTests() {
+     async  function doTests() {
 
-//   await doTest_Find(   aUserName ) 
-     await doTest_Create( aUserName, pData1 )       
-//   await doTest_Find(   aUserName ) 
-//   await doTest_Update( aUserName, pData2 )       
-//   await doTest_Delete( aUserName )       
-//   await doTest_Find(   aUserName ) 
-     }
+//          console.log( await doTest_Find(   aUserName )         ) 
+            console.log( await doTest_Create( aUserName, pData1 ) )      
+//          console.log( await doTest_Find(   aUserName )         )
+//          console.log( await doTest_Update( aUserName, pData2 ) )      
+//          console.log( await doTest_Delete( aUserName )         )
+//          console.log( await doTest_Find(   aUserName )         )
+            }
 
 //   -----  --------------  =  --------------------------------------------------------
 
@@ -54,7 +54,9 @@
             console.log(     ` doTest_Find[1]  The username, '${aUserName}', exists with ID: ${nID}.`)
         } else {    
             console.log(     ` doTest_Find[2]  The username, '${aUserName}', does not exist.`)
-        }   }
+            }   
+    return  pResult 
+            }
 //   -----  --------------  =  --------------------------------------------------------
 
      async  function doTest_Create( aUserName, pData ) { // 
@@ -65,8 +67,10 @@
         if (nID >= 1) {
             console.log(     ` doTest_Create[1]  The username, '${aUserName}', already exists with ID: ${nID}.`)
         } else { 
-                               jstFns.sndAPI( 'POST', `${aHost}${aRoute}`, pData )
-        }   }
+            pResult         =  await jstFns.sndAPI( 'POST', `${aHost}${aRoute}`, pData )
+            }   
+    return  pResult 
+            }
 //   -----  --------------  =  --------------------------------------------------------
 
      async  function doTest_Update( aUserName, pData ) { // 
@@ -77,8 +81,10 @@
         if (nID == 0) {
             console.log(     ` doTest_Update[1]  The username, '${aUserName}', does not exist.`)
         } else { 
-                               jstFns.sndAPI( 'PUT', `${aHost}${aRoute}/${nID}`, pData )
-        }   }
+            pResult         =  await jstFns.sndAPI( 'PUT', `${aHost}${aRoute}/${nID}`, pData )
+            }   
+    return  pResult 
+            }
 //   -----  --------------  =  --------------------------------------------------------
 
      async  function doTest_Delete() { // 
@@ -89,8 +95,10 @@
         if (nID == 0) {
             console.log(     ` doTest_Delete[1]  The username, '${aUserName}', does not exist.`)
         } else { 
-                                     jstFns.sndAPI( 'DELETE', `${aHost}${aRoute}/${nID}`)
-        }   }
+            pResult         =  await jstFns.sndAPI( 'DELETE', `${aHost}${aRoute}/${nID}`)
+            }
+    return  pResult 
+            }
 //   -----  --------------  =   --------------------------------------------------------
 
   function  addDate( n, d )  { return  fmtDate( 6, d, n ).substr( 0, 10 ) }    // .(10314.06.1 RAM Use fmtDate)
