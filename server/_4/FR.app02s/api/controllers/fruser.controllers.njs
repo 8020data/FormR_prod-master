@@ -1,3 +1,4 @@
+//FileName: ./ServerN/appNs/api/controllers/fruser.controllers 
 // --------------------------------------------------------------------------------------------------------
 
 //          FormR           =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
@@ -6,59 +7,69 @@
 
 //      --------------------------------------------------------------------------------------------------
 
-//      var pFns            =   require( `${APP_HOME}/api/routes/_route.fns.njs` ).fns  // .(10318.02.4 RAM Not so simple from here).(10328.06.9)
-        var pFns            =   require( `${FORMRs_4}/route.fns.njs` ).fns              // .(10328.06.9 RAM Moved again) 
-
-        var aTable          =  'formr/users'                                            // .(10318.01.1 RAM Maybe Want this)
+        var aTable          =  'formr/users'                                                                // .(10318.01.1 RAM Maybe Want this)
 //      var aTable          =  'users'
-        var aModel          =  'fruser'                                                 // .(10301.08.1 RAM If this is wrong everything breaks)
-//      var aDB             =  'fr'                                                     // .(10318.01.1 RAM Maybe Want this) 
+        var aModel          =  'fruser'                                                                     // .(10301.08.1 RAM If this is wrong everything breaks)
+
+//      var aPrimaryCol     =  'username'                                                                   //#.(10314.08.2 RAM Needs to be defined).(11109.02.3)
+        var aPrimaryCol     =  pModel && pModel.Primary                                                     // .(10328.01.7 End).(10328.03.2 RAM In case aModel is undefined).(11109.02.3)
+        var aColToSearch    =  pModel && pModel.ToSearch                                                    // .(10418.03.1 RAM Different than PrimaryID Column).(11109.02.4)
+
+//      --------------------------------------------------------------------------------------------------
+
         var aFName          =  `${aModel}.controllers`
-        var aPrimaryCol     =  'username'                                               // .(10314.08.2 RAM Needs to be defined)
 
-        var pConfig         = { ControllersFilename: __filename }                       // .(10301.03.1 RAM Let's try saving the file name)
-            pConfig.Cmd     =  'replace default controllers'                            // .(10301.03.2 RAM Replace the default Controller Routes)
+        var pConfig         ={ ControllersFilename: __filename }                                            // .(10301.03.1 RAM Let's try saving the file name)
+//          pConfig.Cmd     = 'replace default controllers'                                                 //#.(10301.03.2 RAM Replace the default Controller Routes).(10918.02.7)
+//          pConfig.Cmd     = `replace default controllers, then use ${aModel} controllers`                 // .(10918.02.7 RAM if not set here, see .env, otherwise it defaults to 'use')
 
-//      var pModel          =  require( `${APP_HOME}/api/models/index.js` )[ aModel ]   //#.(10109.03.1 RAM Make Generic).(10314.08.3).(10318.02.5).(10414.02.7)
-//      var pModel          =  require( `${FORMRs_4_API}/models/index.js` )[ aModel ]   //#.(10414.02.7)
-        var pModel          =  require(              `../models/index.js` )[ aModel ]   // .(10414.02.7)
+//      var pModel          =  require( `${APP_HOME}/api/models/index.js` )[ aModel ]                       //#.(10109.03.1 RAM Make Generic).(10314.08.3).(10318.02.5).(10414.02.7)
+//      var pModel          =  require( `${FORMRs_4_API}/models/index.js` )[ aModel ]                       //#.(10414.02.8)
+        var pModel          =  require(              '../models/index.js' )[ aModel ]                       // .(10414.02.8)
 
-        var Op              =  require( 'sequelize' ).Op;                               // .(10103.03.3).(10314.08.4)
+//      var Op              =  require( '../models/index.js' ).Sequelize.Op;                                //#.(10228.03.3 RAM Was: db.Sequelize.Op).(10310.01.4)
+        var Op              =  require( 'sequelize' ).Op;                                                   // .(10103.03.3).(10314.08.4)
 
 //      --------------------------------------------------------------------------------------------------
 
         var pRoutes =  //    { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
-//                  Method      Route                                 Roles      Controller
+               { 'Method        Route                          ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
-               { 'http.get     /api/${aTable}/model/           ' : [ '      I', 'getModel            ' ]
-               , 'http.get     /api/${aTable}/                 ' : [ '      I', 'findAll             ' ]    // .(10314.08.1 RAM Add Controllera for React-Admin)
-               , 'http.get     /api/${aTable}/:id              ' : [ '      I', 'findOne             ' ]    // .(10314.08.3)
+//             , 'http.get     /api/${aTable}/                 ' : [ '      I', 'findAll             ' ]    // .(10314.08.1 RAM Add Controllera for React-Admin)
+//             , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    //   Retrieve schema model    .(10905.08.5 RAM Use default model controller)
+//             , 'http.get     /api/${aTable}/test/            ' : [ '      E', 'test                ' ]    // .(10917.09.1 RAM Let's test this controller)
+//             , 'http.get     /api/${aTable}/:id              ' : [ '      I', 'findOne             ' ]    // .(10314.08.3)
                , 'http.post    /api/${aTable}/                 ' : [ '      I', 'createOne           ' ]    // .(10314.08.3)
                , 'http.put     /api/${aTable}/:id              ' : [ '      I', 'updateOne           ' ]    // .(10314.08.5)
-               , 'http.delete  /api/${aTable}/:id              ' : [ '      I', 'deleteOne           ' ]    // .(10314.08.7)
+//             , 'http.delete  /api/${aTable}/:id              ' : [ '      I', 'deleteOne           ' ]    // .(10314.08.7)
                   }
 
-//          pRoutes         =  pFns.setRouteRoles( pRoutes, 'Admin', 'chg', 'all' )      // .(10309.01.2)
+//          pRoutes         =  pFns.setRouteRoles( pRoutes, 'Admin', 'chg', 'all' )                         //#.(10309.01.2)
+            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
 
 //      --------------------------------------------------------------------------------------------------
 
-        var pControllers    = { controller1 : {}
+        var pControllers    = { 
+
+//          controller1       : {}                                                                          //#.(10917.06.3)
+            _fruserController : { Table: aDefault, Model: aModel }                                          // .(10917.06.3 RAM Identify yourself)
 
 //          ----------------------------------------------------------------------------------
 
-          , getModel        :  function getModel( req, res ) { trace( `${aTable}.model` )
-//      var aModel          =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/user.model.json`,      'ASCII' ) //#.(10316.02.1 RAM )
-//      var aModel          =  require( 'fs' ).readFileSync( `${FORMRs_4}/FMR_UserModel1-0.json`,           'ASCII' ) //#.(10316.02.1 RAM ).(10318.02.6).(10328.06.11)
-//      var aModel          =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/user.model.json`,      'ASCII' ) //#.(10316.02.1 RAM ).(10328.06.11).(10414.04.1)
-//      var aModel_JSON     =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.1 RAM Use fruser to be conistent. Or it could be ${aModel} as it was).(10903.01.4)
-        var aModel_JSON     =  JSON.stringify( pModel.RSchema )                                                       // .(10903.01.4 RAM Get a Live version)
+          , getModel        :  function getModel( req, res ) { trace( `${aModel}.model` )                   // .(10905.08.2 RAM Add getModel to __.controllers.njs files)
 
-                               res.json( JSON.parse( aModel_JSON ) )                                                  // .(10414.04.2 RAM Gotcha: var aModel = `{aModel} is undefined)
-
+//      var aModel_JSON     =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.2 RAM Use frrole to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
+            var aModel_JSON =  JSON.stringify( pModel.RSchema )                                                       // .(10903.01.1 RAM Get a Live version)
+        if (aModel_JSON) {                                                                                  // .(10918.05.1) 
+                               res.json( JSON.parse( aModel_JSON ) )                                                  // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
+        } else {                                                                                            // .(10918.05.2 Beg) 
+//                             sndError( pErr, `Error occurred while getting model for table ${aModel}.`, res ) 
+                               res.send( `There is no pModel.RSchema defined for this model, '${aModel}''`) // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
+            }                                                                                               // .(10918.05.2 End) 
                 } // eof `${aFName}.getModel`
 //          ------------------------------------------------------------------
 
-          , createOne       :  function createOne( req, res ) { trace( ` ${req.body.username}` )                // .(10315.12.1 Beg RAM Added)
+          , createOne       :  function createOne( req, res ) { trace( ` ${req.body[ aPrimaryCol ]}` )                // .(10315.12.1 Beg RAM Added)
 
 //     if (!req.body[ aPrimaryCol ]) {                                                                          //  Validate request
 //                             res.status(400).send( { message: "Primary column, ${aPrimaryCol}, can not be empty!" } );
@@ -75,23 +86,23 @@
              ,  passworddate:  req.body.passworddate ? req.body.passworddate :  fmtDate( 6, 90 )                // .(10315.14.1)
                 };
 
-            pModel.create( pBody )                                                                              // .(10109.03.5 RAM Was UserData)
+            pModel.create( pBody )                                                                              // .(10109.03.5 RAM Was UserData, then pData)
      .then( pData => {         pData  =  pData.toJSON( )                                                        // .(10402.01.1 RAM Convert it so that it's easy to view)
                                res.send( pData ); })
     .catch( pErr  => {
                                res.status( 500 ).send( { message: pErr.message || "Some error occurred while creating the user." } ); } )
+
              } // eof createOne
 //          ------------------------------------------------------------------
 
 //    Retrieve all users from the database.
 //    -----------------------------------------------------------------------------------------
 
-          , findAll         :  function findAll( req, res ) {                                                   // .(10314.08.2 RAM Add Controller for React-Admin)
+          , findAll         :  function findAll( req, res ) { trace( ` ${req.query[ aPrimaryCol ] ? req.query[ aPrimaryCol ] : ''}` ) // .(10314.08.2 RAM Add Controller for React-Admin)
 
       const pCondition  = { }
       const aPrimaryVal =  req.query[   aPrimaryCol ];                                                          // .(10109.03.4)
         if (aPrimaryVal) { pCondition[  aPrimaryCol ]  = { [Op.like]: `%${aPrimaryVal}%` } }
-
 
       const aTable     =   req.originalUrl.replace( /\?.+$/, '').replace( /\/api\//, '')                        // .(10107.01.1 Beg RAM Ass Sort, range and filter)
 
@@ -116,13 +127,14 @@
                            } )
      .catch( pErr => {
                            res.status( 500 ).send( { message: pErr.message || "Some error occurred while retrieving users." } ); } );
+
              } // eof findAll
 //          ------------------------------------------------------------------
 
 //    Find a single user with an id
 //    -----------------------------------------------------------------------------------------
 
-          , findOne    :   function findOne( req, res ) {                                                       // .(10314.08.4 RAM Add FindOne Controller for React-Admin)
+          , findOne    :   function findOne( req, res ) {  trace( ` ${req.params.id}` )                         // .(10314.08.4 RAM Add FindOne Controller for React-Admin)
 
         var id         =   req.params.id;
 
@@ -137,15 +149,15 @@
 //    Put (aka UpdateOne) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , updateOne  :   function updateOne( req, res ) {                                                     // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
+          , updateOne  :   function updateOne( req, res ) { trace( ` ${req.params.id}` )                        // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
 
         var id         =   req.params.id;
-        if (req.body.id) { delete req.body.id }                                                                 // .(10315.013.1 RAM id can't be part of body)
+        if (req.body.id) { delete req.body.id }                                                                 // .(10315.13.1 RAM id can't be part of body)
 
             pModel.update( req.body, { where: { id: id } } )
      .then( ( )   => { return pModel.findByPk( id )      } )
      .then( pData => {
-                           res.send( pData.toJSON() );            } )
+                           res.send( pData.toJSON() );   } )                                                    // .(10315.14.1 RAM Added .toJSON())
     .catch( pErr  => {
                            res.status( 500 ).send( { message: `Error updating id: ${id}.\n ${pErr}` } ); } );
             } // eof updateOne
@@ -154,7 +166,7 @@
 //    Delete Controller
 //    -----------------------------------------------------------------------------------------
 
-          , deleteOne  :   function deleteOne( req, res ) {                                                     // .(10314.08.8 RAM Add DeleteOne Controller for React-Admin)
+, deleteOne : function deleteOne( req, res ) { trace( ` ${req.params.id}` )                                     // .(10314.08.8 RAM Add DeleteOne Controller for React-Admin)
 
         var id         =   req.params.id;
 
@@ -168,11 +180,23 @@
             } // eof deleteOne
 //          ------------------------------------------------------------------
 
+//    Test Controller
+//    -----------------------------------------------------------------------------------------
+
+, test : function( req, res ) { trace( '' )                                                                     // .(10917.09.2 Beg RAM Create test controller)
+
+            res.status(  200 ).send(  `Test response from: '${ __filename.replace( /[\/\\]/g, '/' ).replace( /.+\/server/, './server' ) }'.` ); 
+                               return 
+            } // eof test                                                                                       // .(10917.09.2 End)                                                                         
+//          ------------------------------------------------------------------
+
 //    Action Controller
 //    -----------------------------------------------------------------------------------------
 
-          , action     :  function action( req, res ) {                                                         // .(10314.08.9 RAM Add Action Controller for React-Admin)
+, action : function action( req, res ) { trace( ` ${req.params.id}` )                                           // .(10314.08.9 RAM Add Sample Action Controller for React-Admin)
+
         var id         =   req.params.id;
+
             pModel.findByPk( id )
      .then( pData => {
                           res.send( pData ); } )
@@ -191,6 +215,7 @@
              ,  Controllers :   pControllers
              ,  Options     :   pConfig                                   // .(10301.03.3)
                 }
+
                 trace(  "\nmodule.exports" )
 
 // --------------------------------------------------------------------------------------------------------
@@ -220,8 +245,6 @@
 
       if (doTest( 1, __filename )) {   // Format and possible redefine Controllers and Routes in pTableRoutes
 
-//    var { getControllers }  =  require( `${APP_HOME}/api/Controllers/_controller.fns.njs`  ).fns      // .(10318.02.7)
-//    var { setTableRoutes }  =  require( `${APP_HOME}/api/Routes/_route.fns.njs`            ).fns      // .(10318.02.8)
       var { getControllers }  =  require( `${FORMRs_4}/controller.fns.njs`  ).fns                       // .(10318.02.7).(10328.06.12)
       var { setTableRoutes }  =  require( `${FORMRs_4}/route.fns.njs`       ).fns                       // .(10318.02.8).(10328.06.12)
 
@@ -232,8 +255,6 @@
 
       if (doTest( 2, __filename )) {   // Show initial routes and then change roles for it
 
-//    var { shoTableRoutes }  =  require( `${APP_HOME}/api/Routes/_route.fns.njs`  ).fns                // .(10318.02.9)
-//    var { setRouteRoles  }  =  require( `${APP_HOME}/api/Routes/_route.fns.njs`  ).fns                // .(10309.01.3 RAM Wasn't here)    // .(10318.02.108)
       var { shoTableRoutes }  =  require( `${FORMRs_4}/route.fns.njs`       ).fns                       // .(10318.02.8).(10328.06.12)
       var { setRouteRoles  }  =  require( `${FORMRs_4}/route.fns.njs`       ).fns                       // .(10318.02.8).(10328.06.12)
 
