@@ -10,7 +10,10 @@
         var aTable          =  'formr/roles'
 //      var aTable          =  'roles'
         var aModel          =  'frrole'
+
 //      var aPrimaryCol     =  'name'                                                                       //#.(10328.01.7)
+        var aPrimaryCol     =  pModel && pModel.Primary                                                     // .(10328.01.7 End).(10328.03.2 RAM In case aModel is undefined).(11109.02.1 Added)
+        var aColToSearch    =  pModel && pModel.ToSearch                                                    // .(10418.03.1 RAM Different than PrimaryID Column).(11109.02.1 Added)
 
         var pConfig         ={ ControllersFilename: __filename }                                            // .(10301.03.1 RAM Let's try saving the file name)
 //          pConfig.Cmd     = 'replace default controllers'                                                 //#.(10301.03.2 RAM Replace the default Controller Routes).(10918.02.7)

@@ -17,11 +17,10 @@
 
 //      --------------------------------------------------------------------------------------------------
 
-        var pRoutes =  //    { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
-//                     Method   Route                                 Roles      Controller
+        var pRoutes  =  //   { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
+               { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
-               {       //       Order is important !          
-                 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
+               , 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
                , 'http.get     /api/${aTable}/                 ' : [ 'A O U E', 'findAll             ' ]    // Retrieve all table records
                , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    // Retrieve schema model       // .(10905.08.1 RAM).(10918.04.1 RAM Order is important)
                , 'http.get     /api/${aTable}/test/            ' : [ '      I', 'test                ' ]    // Display controller filename // .(10917.09.7 RAM Let's test this controller).(10918.04.2)
@@ -33,6 +32,8 @@
                , 'http.put     /api/${aTable}/:id              ' : [ 'A O U -', 'updateOne           ' ]    // Update a table record with id
                , 'http.delete  /api/${aTable}/:id              ' : [ 'A O U -', 'deleteOne           ' ]    // Delete all table records
                   }
+
+            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
 //      --------------------------------------------------------------------------------------------------
 
         var pControllers    =  function( aModel, aDBSN ) {                                                  // .(10328.01.8 RAM Major change. Was: pControllers =)
@@ -56,6 +57,9 @@
 
 //          ----------------------------------------------------------------------------------
 
+//    GetModel Controller
+//    -----------------------------------------------------------------------------------------
+
           , getModel        :  function getModel( req, res ) { trace( `${aModel}.model` )                   // .(10905.08.2 RAM Add getModel to _default.controllers.njs file)
 
 //      var aModel_JSON     =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.2 RAM Use frrole to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
@@ -68,6 +72,9 @@
             }                                                                                               // .(10918.05.2 End) 
             } // eof `${aFName}.getModel`
 //          ----------------------------------------------------------------------------------
+
+//    CreateOne (ie GET) Controller
+//    -----------------------------------------------------------------------------------------
 
           , createOne       :  function createOne( req, res ) { trace( `${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
 
@@ -93,6 +100,9 @@
             } // eof `${aFName}.createOne`
 //          ----------------------------------------------------------------------------------
 
+//    FindOne (ie GET) Controller
+//    -----------------------------------------------------------------------------------------
+
           , findOne         :  function findOne(     req, res ) { trace( `${aModel}.findOne`)               // .(10918.03.1 RAM Was getOne)
 
                var id       =  req.params.id;                                                               // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
@@ -108,6 +118,9 @@
                                              sndError( pErr, `Error retrieving id = '${id}' for table ${aModel}.`, res ) } )
             } // eof `${aFName}.getOne`
 //          ----------------------------------------------------------------------------------
+
+//    FindAll (ie GET) Controller
+//    -----------------------------------------------------------------------------------------
 
           , findAll         :  function findAll(     req, res ) { trace( `${aModel}.findAll`)
 
@@ -148,6 +161,9 @@
             } // eof `${aFName}.findAll`
 //          ----------------------------------------------------------------------------------
 
+//    FindMany (ie GET) Controller
+//    -----------------------------------------------------------------------------------------
+
           , findMany        :  function findMany(    req, res ) { trace( `${aModel}.findMany`)
 
               pControllers_.findAll( req, res )                                                                       // .(11103.02.1 RAM Was: pController.findAll)
@@ -162,6 +178,9 @@
 //                                           sndError( pErr, ` ** Error retrieving filter = '${aFilter}' for table ${aModel}.`, res ) } );
             } // eof `${aFName}.findMany`
 //          ----------------------------------------------------------------------------------
+
+//    UpdateOne (ie PUT) Controller
+//    -----------------------------------------------------------------------------------------
 
           , updateOne       :  function updateOne(   req, res ) { trace( `${aModel}.updateOne`)
 /*
@@ -179,31 +198,46 @@
 //                       .catch( pErr  => {
 //                                          sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
 */
-               var id       =    req.params.id;                                                                       // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
-//             var id       =    req.params[ aPrimaryCol.toLowerCase() ];                                             // .(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
+           var id           =  req.params.id;                                                                       // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
+//         var id           =  req.params[ aPrimaryCol.toLowerCase() ];                                             // .(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
+           if (req.body.id) {  delete req.body.id }                                                                 // .(10315.13.1 RAM id can't be part of body)
 
-               var pBody    =    req.body
-               var pWhere   =   {  }; pWhere[ aPrimaryCol ] = id                                                      // .(10418.08.1 RAM Will this work using Sequelize's PrimaryCol )
-//             if (req.body.id) { delete req.body.id }                                                                // .(10315.13.1 RAM id can't be part of body)
+           var pBody        =  req.body
+           var pWhere       = { }; pWhere[ aPrimaryCol ] = id                                                       // .(10418.08.1 RAM Will this work using Sequelize's PrimaryCol )
+//         var pWhere       = { }; pWhere[ id ] = id                                                                //#.(11109.05.1 RAM Will this work?? )
 
-               if (pBody[ aPrimaryCol ]) { delete pBody[ aPrimaryCol ] }                                              // .(10315.13.1 RAM aPrimaryCol can't be part of body)
+           if (pBody[ aPrimaryCol ]) { delete pBody[ aPrimaryCol ] }                                                // .(10315.13.1 RAM aPrimaryCol can't be part of body)
 
-                   pModel.update( pBody,  { where: pWhere } )                                                         // .(10418.08.2 RAM Instead of this: { id: id } )
-                         .then(   ( )  => { return pModel.findByPk( id ) } )
-                         .then(  pData => {                                                                           // .(10906.05.4 RAM pData is pRow returned by pModel.findByPk, not pData returned by Sequelize) 
-                             if (pData) {   res.send( pData.toJSON() );  }
-                                   else {   sndError( '',    `Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.` ); } } )
-                         .catch(  pErr  => {
-                                            sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
+//             pModel.update( req.body,    { where: { id: id } } )
+               pModel.update(  pBody,    { where: pWhere } )                                                        // .(10418.08.2 RAM Instead of this: { id: id } )
+                     .then(    ( )   =>  { return pModel.findByPk( id ) } )
+                     .then(    pData =>  {                                                                          // .(10906.05.4 RAM pData is pRow returned by pModel.findByPk, not pData returned by Sequelize) 
+                           if (pData)    { res.send( pData.toJSON() );  }
+                             else {        sndError( '',   `Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.` ); } } )
+                     .catch(   pErr  =>  {
+                                           sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
             } // eof `${aFName}.updateOne`
 //          ----------------------------------------------------------------------------------
-/*
-          , updateMany      :  function updateMany(  req, res ) { trace( `${aModel}.updateMany`)
 
-                controller(  req, res, 'updateMany(' + req.params.ids + ')' )
+//    UpdateOne2 (ie PUT) Controller
+//    -----------------------------------------------------------------------------------------
 
-            } // eof `${aFName}.updateMany` */
-//          ----------------------------------------------------------------------------------
+          , updateOne2      :  function updateOne( req, res ) { trace( ` ${req.params.id}` )                    // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
+
+        var id             =   req.params.id;
+        if (req.body.id) {     delete req.body.id }                                                             // .(10315.13.1 RAM id can't be part of body)
+
+            pModel.update(     req.body, { where: { id: id } } )
+     .then( ( )   => {         return  pModel.findByPk( id )      } )
+     .then( pData => {
+                               res.send( pData.toJSON() );   } )                                                // .(10315.14.1 RAM Added .toJSON())
+    .catch( pErr  => {
+                               res.status( 500 ).send( { message: `Error updating id: ${id}.\n ${pErr}` } ); } );
+            } // eof updateOne
+//          ------------------------------------------------------------------
+
+//    Delete Controller
+//    -----------------------------------------------------------------------------------------
 
           , deleteOne       :  function deleteOne(    req, res ) { trace( `${aModel}.deleteOne`)
 
@@ -213,20 +247,26 @@
                    pModel.destroy( {  where:  pWhere } )                                                              // .(10418.08.4 RAM Instead of this: { id: id } )
 
                          .then(   nNum  => { if (nNum == 1) {
-                                             res.send( { message: `Record was deleted successfully for table ${aModel}!` } );
+                                             res.send( { message: `Record was deleted successfully from table ${aModel}!`,  id: id } );  // .(11109.06.1 RAM Added id)
                                          } else {
                                              res.send( { message: `Cannot delete record with id=${id} for table ${aModel}.` } ); } } )
                          .catch(  pErr  => {
-                                            sndError( pErr, `Error deleting record with id=${id} for table ${aModel}.`            , res ) } );   // .(10828.03.1)
+                                            sndError( pErr, `Error deleting record with id=${id} for table ${aModel}.`     , res ) } );  // .(10828.03.1)
             } // eof `${aFName}.deleteOne`
 //          ----------------------------------------------------------------------------------
 /*
+//    DeleteAll Controller
+//    -----------------------------------------------------------------------------------------
+
           , deleteMany      :  function deleteMany(   req, res ) { trace( `${aModel}.deleteMany`)
 
                 controller( req, res, 'deleteMany(' + req.params.ids + ')' )
 
-            } // eof `${aFName}.deleteMany` */
+            } // eof `${aFName}.deleteMany` 
 //          ----------------------------------------------------------------------------------
+*/
+//    DeleteAll Controller
+//    -----------------------------------------------------------------------------------------
 
           , deleteAll       :  function deleteAll(    req, res ) { trace( `${aModel}.deleteAll`)
 
@@ -243,9 +283,12 @@
             } // eof `${aFName}.deleteAll`
 //          ----------------------------------------------------------------------------------
 
+//    Test Controller
+//    -----------------------------------------------------------------------------------------
+
           , test            : function( req, res ) { trace( '' )                                            // .(10917.09.8 Beg RAM Create test controller)
 
-            res.status(  200 ).send(  `Test response from: '${ __filename.replace( /[\/\\]/g, '/' ).replace( /.+\/server/, './server' ) }'.` ); 
+                               res.status(  200 ).send(  `Test response from: '${ __filename.replace( /[\/\\]/g, '/' ).replace( /.+\/server/, './server' ) }'.` ); 
                                return 
 
             } // eof test                                                                                   // .(10917.09.8 End)                                                                         
@@ -346,24 +389,26 @@
 
   function  sndError( pErr, aMsg, res ) {                                                                   // .(10418.06.2 RAM Beg Turn itinto a function)
        var  pMsg = { message: aMsg };  
-        if (pErr)  { pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
-            console.log( fmtObj( pMsg ) ); res.status( 500 ).send( pMsg );                                  // .(10418.06.1 RAM I didn't get the message)
+        if (pErr)  { if (pErr.stack) {delete pErr.stack }                                                 // .(11109.08.1 RAM Delete pErr.stack)
+                   pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
+//          console.log( fmtObj( pMsg ) ); res.status( 500 ).send( pMsg );                                  // .(10418.06.1 RAM I didn't get the message)
+            console.log( fmtObj( pMsg ) ); res.status( 200 ).send( pMsg );                                  // .(11109.09.1 RAM Status 500 is a hard error, let's send JSON with error)
             }                                                                                               // .(10418.06.2 End)
 //          ------------------------------------------------------------------
         } // eof pControllers                                                                               // .(10328.01.11) 
 //      --------------------------------------------------------------------------------------------------
 
-                pConfig     = { ControllersFilename: __filename }                                           // .(10301.03.5 RAM Let's try saving the file name)
-                pConfig.Cmd =   ''                                                                          // .(10301.03.6)
+            pConfig         = { ControllersFilename: __filename }                                           // .(10301.03.5 RAM Let's try saving the file name)
+            pConfig.Cmd     =   ''                                                                          // .(10301.03.6)
 
-            module.exports  =
-             {  Routes      :   pRoutes
-             ,  Controllers :   pControllers                                                                // .(10328.01.12 RAM It's now a function 
-             ,  Options     :   pConfig                                                                     // .(10301.03.3)
-                }
+        module.exports      =
+         {  Routes          :  pRoutes
+         ,  Controllers     :  pControllers                                                                 // .(10328.01.12 RAM It's now a function 
+         ,  Options         :  pConfig                                                                      // .(10301.03.3)
+            }
 //      --------------------------------------------------------------------------------------------------
 
-                trace(  "\nmodule.exports" )
+        trace(  "\nmodule.exports" )
 
-// --------------------------------------------------------------------------------------------------------------
+// =================================================================================================================
 
