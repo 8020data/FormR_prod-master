@@ -1,21 +1,19 @@
+//FileName: ./ServerN/appNs/api/controllers/fruser.controllers 
 // --------------------------------------------------------------------------------------------------------
 
-//          FormR       =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
-        var FormR       =  require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
-            FormR.init(  __dirname, __filename );       //  FormR.help(); process.exit()                                    
-
-//      --------------------------------------------------------------------------------------------------
-
-//      var pFns            =   require( '../routes/_route.fns.njs' ).fns                                   //#.(10328.06.9) 
-//      var pFns            =   require( `${APP_HOME}/api/routes/_route.fns.njs` ).fns                      //#.(10318.02.4 RAM Not so simple from here).(10328.06.9)
-//      var pFns            =   require( `${FORMRs_4}/route.fns.njs` ).fns                                  // .(10328.06.9 RAM Moved again) 
+//          FormR           =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
+        var FormR           =  require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
+            FormR.init(      __dirname, __filename );       //  FormR.help(); process.exit()                                    
 
 //      --------------------------------------------------------------------------------------------------
 
         var aTable          =  'formr/users'                                                                // .(10318.01.1 RAM Maybe Want this)
 //      var aTable          =  'users'
         var aModel          =  'fruser'                                                                     // .(10301.08.1 RAM If this is wrong everything breaks)
-        var aPrimaryCol     =  'username'                                                                   // .(10314.08.2 RAM Needs to be defined)
+
+//      var aPrimaryCol     =  'username'                                                                   //#.(10314.08.2 RAM Needs to be defined).(11109.02.3)
+        var aPrimaryCol     =  pModel && pModel.Primary                                                     // .(10328.01.7 End).(10328.03.2 RAM In case aModel is undefined).(11109.02.3)
+        var aColToSearch    =  pModel && pModel.ToSearch                                                    // .(10418.03.1 RAM Different than PrimaryID Column).(11109.02.4)
 
 //      --------------------------------------------------------------------------------------------------
 
@@ -35,19 +33,19 @@
 //      --------------------------------------------------------------------------------------------------
 
         var pRoutes =  //    { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
-//                  Method      Route                                 Roles      Controller
+               { 'Method        Route                          ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
-               { 
-                 'http.get     /api/${aTable}/                 ' : [ '      I', 'findAll             ' ]    // .(10314.08.1 RAM Add Controllera for React-Admin)
+//             , 'http.get     /api/${aTable}/                 ' : [ '      I', 'findAll             ' ]    // .(10314.08.1 RAM Add Controllera for React-Admin)
 //             , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    //   Retrieve schema model    .(10905.08.5 RAM Use default model controller)
 //             , 'http.get     /api/${aTable}/test/            ' : [ '      E', 'test                ' ]    // .(10917.09.1 RAM Let's test this controller)
-               , 'http.get     /api/${aTable}/:id              ' : [ '      I', 'findOne             ' ]    // .(10314.08.3)
+//             , 'http.get     /api/${aTable}/:id              ' : [ '      I', 'findOne             ' ]    // .(10314.08.3)
                , 'http.post    /api/${aTable}/                 ' : [ '      I', 'createOne           ' ]    // .(10314.08.3)
                , 'http.put     /api/${aTable}/:id              ' : [ '      I', 'updateOne           ' ]    // .(10314.08.5)
-               , 'http.delete  /api/${aTable}/:id              ' : [ '      I', 'deleteOne           ' ]    // .(10314.08.7)
+//             , 'http.delete  /api/${aTable}/:id              ' : [ '      I', 'deleteOne           ' ]    // .(10314.08.7)
                   }
 
 //          pRoutes         =  pFns.setRouteRoles( pRoutes, 'Admin', 'chg', 'all' )                         //#.(10309.01.2)
+            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
 
 //      --------------------------------------------------------------------------------------------------
 

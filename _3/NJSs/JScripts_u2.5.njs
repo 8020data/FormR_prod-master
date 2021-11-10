@@ -378,7 +378,7 @@
 
   function  fmtObj( pObj, nCd ) {                                                                               // .(90530.05.3 RAM Note two versions for client & server)
         if (typeof( window ) == 'undefined') {
-       var  aObj =  require( 'util' ).inspect( pObj ) }
+       var  aObj =  require( 'util' ).inspect( pObj, { depth: 9 } ) }                                           // .(11109.05.1 RAM Added depth)
           else {
        var  aObj =  JSON.stringify( pObj ).replace( /","/g, '"\n ,"' ).replace( /},{/g, '}\n,{' ) }
 //  return  aObj.split( '\n' ).join( '\n    ')

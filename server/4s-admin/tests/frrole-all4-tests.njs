@@ -11,37 +11,32 @@
        var  aArgs           = '?filter={}&range=[0,9]&sort=["id","ASC"]'
 
        var  pData1 =
-             {  name        : 'swimmer1'
+             {  name        : 'Swimmer'
              ,  updatedAt   :  new Date
              ,  createdAt   :  new Date
                 }
 
        var  pData2 =
-             {  name        : 'diver'
+             {  name        : 'Diver'
              ,  updatedAt   :  new Date
                 }
 
-    ; (     async          ( ) => {
-
-//      var pResult =   await  jstFns.sndAPI( 'POST',  `${aHost}${aRoute}`, pData1 )    // C reate a rec  .(11103.05.1 RAM Why not .body[0].id?)
-//      var  nID    =   pResult.body.id
-
-//    if (pResult.Error) { console.log( "You got an error", pResult.Error); process.exit()  }
-
-//     console.log( pResult )
-
-
-//                    await  jstFns.sndAPI( 'GET',   `${aHost}${aRoute}`, aArgs  )            // R ead 10 recs
-
-//                    await  jstFns.sndAPI( 'PUT',   `${aHost}${aRoute}/${nID}`, pData2 )     // U pdate a rec
-
-//                    await  jstFns.sndAPI( 'DELETE',`${aHost}${aRoute}`, nID    )            // D elete a red
-     var nID = 1
-         var pResult =   await jstFns.sndAPI( 'GET',   `${aHost}${aRoute}`, nID    )            // R ead one rec that doesn't exist
-       console.log( pResult )
-
-
-                           } )( )
-
 // ----- ----------  =    ---------------------------------------------------------
 
+            doTests() 
+
+     async  function doTests() {
+
+       var  mResults = [], pResult, nID = 666
+
+            pResult  =  await jstFns.sndAPI( 'GET',   `${aHost}${aRoute}`, nID    );        mResults.push( pResult )  // R ead one rec that doesn't exist
+            pResult  =  await jstFns.sndAPI( 'GET',   `${aHost}${aRoute}`, aArgs  );        mResults.push( pResult )  // R ead 10 recs
+            pResult  =  await jstFns.sndAPI( 'POST',  `${aHost}${aRoute}`, pData1 );        mResults.push( pResult )  // C eate a rec
+        if (nID      =  pResult.body && pResult.body.id ) {
+            pResult  =  await jstFns.sndAPI( 'PUT',   `${aHost}${aRoute}/${nID}`, pData2 ); mResults.push( pResult )  // U pdate a rec
+            pResult  =  await jstFns.sndAPI( 'DELETE',`${aHost}${aRoute}`, nID    );        mResults.push( pResult )  // D elete a red
+            }
+
+            console.dir( mResults )
+            }
+//   -----  --------------  =  --------------------------------------------------------
