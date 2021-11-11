@@ -1,8 +1,7 @@
--- DROP DATABASE `world` ;
--- CREATE SCHEMA `world` ;
+DROP DATABASE `world` ;
+CREATE SCHEMA `world` ;
 USE `world` ;
 
---
 -- Table structure for table `country`
 --
 
