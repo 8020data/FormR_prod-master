@@ -9,8 +9,8 @@ checkDuplicateUsernameOrEmail = ( req, res, next ) => { trace()
       username: req.body.username
     }
   }).then( function onCheckUsernameInUse( user ) {              // .(10228.03.x) 
-      if (user) {              trace(  `    Failure: Username, '${ req.body.username }', is already in use!` )
-          res.status(400).send( { message: `Failure: Username, '${ req.body.username }', is already in use!` } );
+      if (user) {              trace(  `    Failure: Username, '${ req.body.username }', is already in use with id: ${user}!` )
+          res.status(400).send( { message: `Failure: Username, '${ req.body.username }', is already in use with id: ${user}!` } );
           return;
           }
     User.findOne( {  // Email

@@ -35,12 +35,15 @@
         var aFName               = `${aModel}.controller`
 
         var pConfig         ={ ControllersFilename: __filename }                                            // .(10301.03.1 RAM Let's try saving the file name)
-//          pConfig.Cmd     = 'replace default controllers'                                                 //#.(10301.03.2 RAM Replace the default Controller Routes).(10918.02.7)
-            pConfig.Cmd     = `replace default controllers, then use ${aModel} controllers`                 // .(10918.02.7 RAM if not set here, see .env, otherwise it defaults to 'use')
+//          pConfig.Cmd     = `use default controllers`                                                     // .(11111.01.1 RAM Let's set it to use the default controllers)
+//          pConfig.Cmd     = `don't use default controllers`                                               // .(11111.01.1 RAM Let's set it to not use the default controllers)
+//          pConfig.Cmd     =  'replace default controllers'                                                //#.(10301.03.2 RAM Replace the default Controller Routes).(10918.02.7)
+//          pConfig.Cmd     =  `replace default controllers, then use ${aModel} controllers`                // .(10918.02.7 RAM if not set here, see .env, otherwise it defaults to 'use')
+//  -->     pConfig.Cmd     = `dont use default controllers, use ${aModel} controllers`                     // .(10918.02.7 RAM if not set here, see .env, otherwise it defaults to 'use')
 
 //      var pModel          =  require( `${APP_HOME}/api/models/index.js` )[ aModel ]                       //#.(10109.03.1 RAM Make Generic).(10314.08.3).(10318.02.5).(10414.02.7)
-//      var pModel          =  require( `${FORMRs_4_API}/models/index.js` )[ aModel ]                       //#.(10414.02.8)
-//      var pModel          =  require(              '../models/index.js' )[ aModel ]                       //#.(10414.02.6)
+//      var pModel          =  require(              '../models/index.js' )[ aModel ]                       //#.(10414.02.6).(11109.11.2 RAM This is undefined because there is no model for 'frauth')
+
         var db              =  require(              '../models/index.js' );                                // .(10328.06.6 RAM Back to normal app).(10414.02.6)
 
         var User            =  db.fruser;                                                                   //#.(10228.03.1 RAM Was: db.user).(10310.01.2).(10326.07.x RAM And 'fr...' are the actual FormR model names)
@@ -51,16 +54,18 @@
 
 // --------------------------------------------------------------------------------------------------
 
-      var  pRoutes   =  // {         aRoute                            : [ aRoles,    aController ] = mControllerRoles }
-//                        Method      Route                                 Roles      Controller
-//                      -----------  --------------------------------       -------    --------------------
-                     { 'http.post    /api/${aTable}/register/        ' : [ '      E', 'register            ' ]  // .(10228.12.1).(10305.03.1 RAM S.B http.post, not get)
-                     , 'http.post    /api/${aTable}/login/           ' : [ '      E', 'login               ' ]  // .(10228.12.2).(10305.03.2)
-                     , 'http.get     /api/${aTable}/session/         ' : [ '      E', 'session             ' ]  // .(10312.10.1 RAM Let's add it here)
-//                   , 'http.get     /api/${aTable}/test/            ' : [ '      E', 'test                ' ]  // .(10312.11.2 RAM Let's test Controller1).(10917.09.5 RAM Was controller1)
-                     , 'http.get     /api/${aTable}/test/            ' : [ '      I', 'test                ' ]  // .(10917.09.7 RAM Let's test this controller).(10918.04.2)
-                        }
-// --------------------------------------------------------------------------------------------------
+        var pRoutes  =  //  {  aRoute                            : [ aRoles,    aController ] = mControllerRoles }
+               { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
+//                -----------  --------------------------------       -------    --------------------
+               { 'http.post    /api/${aTable}/register/        ' : [ '      E', 'register            ' ]    // .(10228.12.1).(10305.03.1 RAM S.B http.post, not get)
+               , 'http.post    /api/${aTable}/login/           ' : [ '      E', 'login               ' ]    // .(10228.12.2).(10305.03.2)
+               , 'http.get     /api/${aTable}/session/         ' : [ '      E', 'session             ' ]    // .(10312.10.1 RAM Let's add it here)
+//             , 'http.get     /api/${aTable}/test/            ' : [ '      E', 'test                ' ]    // .(10312.11.2 RAM Let's test Controller1).(10917.09.5 RAM Was controller1)
+               , 'http.get     /api/${aTable}/test/            ' : [ '      I', 'test                ' ]    // .(10917.09.7 RAM Let's test this controller).(10918.04.2)
+                  }
+            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
+
+// ---------------------------------------------------------------------------------------------------------
 
    var pControllers = {
 
