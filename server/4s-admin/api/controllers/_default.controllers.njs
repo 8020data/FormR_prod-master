@@ -17,7 +17,7 @@
 
 //      --------------------------------------------------------------------------------------------------
 
-        var pRoutes  =  //   { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
+        var pRoutes  =  //  {  aRoute                            : [ aRoles,    aController ] = mControllerRoles }
                { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
                , 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
@@ -32,9 +32,9 @@
                , 'http.put     /api/${aTable}/:id              ' : [ 'A O U -', 'updateOne           ' ]    // Update a table record with id
                , 'http.delete  /api/${aTable}/:id              ' : [ 'A O U -', 'deleteOne           ' ]    // Delete all table records
                   }
-
             delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
-//      --------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------------------------------------
 
         var pControllers    =  function( aModel, aDBSN ) {                                                  // .(10328.01.8 RAM Major change. Was: pControllers =)
 
