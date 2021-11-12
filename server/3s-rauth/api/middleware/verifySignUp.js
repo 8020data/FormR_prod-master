@@ -9,8 +9,8 @@ checkDuplicateUsernameOrEmail = ( req, res, next ) => { trace()
       username: req.body.username
     }
   }).then( function onCheckUsernameInUse( user ) {              // .(10228.03.x) 
-      if (user) {              trace(  `    Failure: Username, '${ req.body.username }', is already in use!` )
-          res.status(400).send( { message: `Failure: Username, '${ req.body.username }', is already in use!` } );
+      if (user) {              trace(  `    Failure: Username, '${ req.body.username }', is already in use with id: ${user.id}!` )
+          res.status(400).send( { message: `Failure: Username, '${ req.body.username }', is already in use with id: ${user.id}!` } );
           return;
           }
     User.findOne( {  // Email
@@ -18,8 +18,8 @@ checkDuplicateUsernameOrEmail = ( req, res, next ) => { trace()
         email: req.body.email
       }
     }).then( function onCheckEmailInUse( user ) {              // .(10228.03.x) 
-      if (user) {              trace(  `    Failure: Email, '${ req.body.email }', is already in use!` )
-          res.status(400).send( { message: `Failure: Email, '${ req.body.email }', is already in use!` } );
+      if (user) {              trace(  `    Failure: Email, '${ req.body.email }', is already in use with id: ${user.id}!` )
+          res.status(400).send( { message: `Failure: Email, '${ req.body.email }', is already in use with id: ${user.id}!` } );
           return;
           }
                                trace(  "    Success: Username and Email are not already in use!" )
