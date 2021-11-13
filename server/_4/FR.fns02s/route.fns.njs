@@ -56,7 +56,8 @@
    , getTableRoutes: function( pTableRoutes, aTable, aCmd ) { trace( aTable )           // called by _controller.fns.getControllerRoutes
 
         var aDefaultRoutes =  { }
-       if ((aCmd.match( /^replace/ ) == null) && aTable != '${aTable}') {               // if using _default TableRoutes, i.e. "don't replace default contollers"
+//     if ((aCmd.match(  /^replace/   ) == null) && aTable != '${aTable}') {            // if using _default TableRoutes, i.e. not "dont use default contollers", or "replace default controllers"
+       if ((aCmd.match( /replace default/ ) != null)) {                                 // .(11111.01.16 RAM Using _default controllers)
         var pDefaultRoutes =  setNewRoutes(  aDefault , aTable )                        // set default table name to current table name
             }
             pNewRoutes     =  setNewRoutes(   aTable    )                               // format route name and roles
@@ -191,7 +192,8 @@
             Object.keys( pTableRoutes ).forEach( function setAppRoute( aTable ) { trace( `\n${ Object.keys( pTableRoutes[ aTable] ).length - 1 } Routes for '${aTable}'`)
             
             Object.keys( pTableRoutes[ aTable ] ).forEach( function setRoute_( aRoute ) {                   //  Loop through routes for each table   
-        if (aRoute   == 'ControllersFile') { return }                                                       // .(10406.05.1 RAM Why now?).(10318.06.2 RAM This is what happens when you stick ControllersFile into pTableRoutes)
+        if (aRoute == 'ControllersFile') { return }                                                         // .(10406.05.1 RAM Why now?).(10318.06.2 RAM This is what happens when you stick ControllersFile into pTableRoutes)
+        if (aRoute.match( /^ *Method/ )) { return }                                                         // .(11111.05.1 RAM This is what happens when you stick Headings into pTableRoutes)
 
         var aControllersFile = pTableRoutes[ aTable ].ControllersFile                                       // .(10318.09.1 RAM OK!)
 
@@ -224,7 +226,9 @@
 //          aControllersFile = `${FORMRs_4}/FMR_default.controllers.njs`                                    //#.(10326.01.3 RAM Breakes of the require( ../...)s below) 
 //          aControllersFile = `../controllers/_default.controllers.njs`                                    //#.(10326.01.3 RAM using pFS below so it can't be a relative path) 
 //          aControllersFile = `${APP_HOME_API}/controllers/_default.controllers.njs`                       // .(10326.01.3) 
-            aControllersFile = [`${APP_HOME_API}/controllers/_default.controllers.njs`,aControllersFile[1]] // .(10326.01.3).(10330.01.5 RAM Copy aModel name over) 
+//          aControllersFile = [`${APP_HOME_API}/controllers/_default.controllers.njs`,aControllersFile[1]]                    // .(10326.01.3).(10330.01.5 RAM Copy aModel name over).(11111.04.1 RAM Oops) 
+            aControllersFile[0] = aControllersFile[0].replace( /controllers.*\.(n?js)/, "controllers\\_default.controllers.$1")  // .(10326.01.3).(10330.01.5 RAM Copy aModel name over).(11111.04.1 RAM Oops) 
+//          aControllersFile[0] = aControllersFile[0].replace( /controllers.*\.(n?js)/, "controllers\\_controllers.$1")          // .(10326.01.3).(10330.01.5 RAM Copy aModel name over).(11111.04.1 RAM Oops) 
             }                                                                                               // .(10326.01.1 End)
         if (aRoute_) {
             setRte( aProtocol, aMethod, aRoute_, aRoles, aController, aControllersFile )                    // .(10318.09.3)(.10330.01.3 RAM It's really an Array)

@@ -13,7 +13,7 @@
       var   pControllerFns      = { fns:                                                                                        // .(10329.03.1 RAM Make it easier to know what is being returned)
 // ----------------------------------------------------------------------------
 
-   { getControllers : function( pModule, aShowEm ) {  trace( )                                                                  // called by routes.njs or ${aTable}.controllers.njs
+   { getControllers : function( pModule, aShowEm ) {  trace( pModule.TableName )                                                // called by routes.njs or ${aTable}.controllers.njs
 
         if (typeof(pModule) == 'string') {                                                                                      // .(10414.03.RAM *** This won't work for the FormR app )
         
@@ -53,28 +53,49 @@
 
 //          ----------------------------------------------------------------
 
-        var aUseDefault      = `use default controllers, then use ${aModel} controllers`                    // .(10918.02.1)
-       if (!pOptions.Cmd) {                                                                                 // .(10918.02.2 Beg RAM Set {Cmd} if not defined)
-        var bUseForModel     =  process.env.DONT_USE_DEFAULT_CONTROLLERS != ''                              // .(10919.01.1 RAM)
+            
+//      var aUseDefault      = `use default controllers in place of ${aModel} controllers if not defined`   //#.(10918.02.1).(11111.01.5)
+//      var aUseDefault      = `replace default controllers, then use ${aModel} controllers`                //#.(11111.01.5 RAM 'Use' is replaced with 'Replace')
+       if (!pOptions.Cmd) {                                                                                 // .(10918.02.2 Beg RAM Set {Cmd} with .env if not defined)
+
+        var bUseDefault      =  process.env.DONT_USE_DEFAULT_CONTROLLERS != ''                              // .(10919.01.1 RAM Use (i.e. Replace) Default Controllers)
         if (process.env.USE_DEFAULT_CONTROLLERS) {   
-        var bUseForModel     =  process.env.USE_DEFAULT_CONTROLLERS.match(      new RegExp( `(1|true|${aModel})` ) ) != null
+            trace(`.env.USE_DEFAULT_CONTROLLERS: ${process.env.USE_DEFAULT_CONTROLLERS}` )                  // .(11111.01.6)
+        var bUseDefault      =  process.env.USE_DEFAULT_CONTROLLERS.match(      new RegExp( `(1|true|${aModel})` ) ) != null
             }
+  
         if (process.env.DONT_USE_DEFAULT_CONTROLLERS) {                                          
-        var bDontUseForModel =  process.env.DONT_USE_DEFAULT_CONTROLLERS.match( new RegExp( `(1|true|${aModel})` ) ) != null
-        var bUseForModel     =  bDontUseForModel == false
+            trace(`.env.DONT_USE_DEFAULT_CONTROLLERS: ${process.env.DONT_USE_DEFAULT_CONTROLLERS}` )        // .(11111.01.7)
+        var bDontUseDefault  =  process.env.DONT_USE_DEFAULT_CONTROLLERS.match( new RegExp( `(1|true|${aModel})` ) ) != null
+        var bUseDefault      =  bDontUseDefault == false
             }
-            pOptions.Cmd        =  bUseForModel        ? aUseDefault         : aUseDefault.replace( /use /, 'replace ' )  
+
+//          pOptions.Cmd        =  bUseForModel        ? aUseDefault         : aUseDefault.replace( /use /, 'replace ' )    //#.(11111.01.5)
+        } else {                                                                                            // .(11111.01.8)
+            trace(`using previously defined pOptions.Cmd for ${aModel}: '${pOptions.Cmd}')` )               // .(11111.01.9)
+        var bUseDefault      =  pOptions.Cmd.match( /^(don'?t use|replace) default/ ) == null                 // .(11111.01.10)
             }
-            pOptions.Cmd        =  pOptions.Cmd        ? pOptions.Cmd        : aUseDefault  
-            pDefaultOptions.Cmd =  pDefaultOptions.Cmd ? pDefaultOptions.Cmd : pOptions.Cmd                 // .(10918.02.2 End)
+//          pOptions.Cmd        =  pOptions.Cmd        ? pOptions.Cmd        : aUseDefault  
+//          pDefaultOptions.Cmd =  pDefaultOptions.Cmd ? pDefaultOptions.Cmd : pOptions.Cmd                 // .(10918.02.2 End)
 
 //          ----------------------------------------------------------------
-
+                        
       if (! pTableRoutes[  aDefault  ] ) {
+//          pDefaultOptions.ControllersFilename           =  pDefaultOptions.Cmd.match( /^use/ ) ? pDefaultOptions.ControllersFilename : ''   //#.(11111.01.11)
+            pDefaultOptions.ControllersFilename           =  bUseDefault ?  pDefaultOptions.ControllersFilename : ''                          // .(11111.01.11 RAM Don't need it if not using it)
+            pDefaultOptions.Cmd                           =  bUseDefault ? `use default controllers in place of ${ aModel.padStart(7) } controllers if not defined` : `dont use default controllers, use ${ aModel.padStart(7) } controllers` // .(11111.01.12)
+
+            trace( `_default  ControllersFilename: ..${      pDefaultOptions.ControllersFilename.replace( /.+FormR/, 'FormR' ) }` )           // .(11111.01.13)
+            trace( `_default  Cmd:                   ${      pDefaultOptions.Cmd.replace( /^replace/, 'dont use' ) }` )                       //#.(11111.01.14)
+
 //          getControllerRoutes(  aDefault  )                                                               // get default controller routes if not in pTableRoutes
 //          getControllerRoutes(  aDefault ,  null,    null,      null,   pDefaultOptions )                 // .(10303.03.8 RAM Need _defaultController Filename).(10303.09.1 RAM Don't use empty {})
             getControllerRoutes(  aDefault ,  aModel,  null,      null,   pDefaultOptions )                 // .(10328.01.1 RAM We need to know which model to use for these _default controllers)
             }
+                   pOptions.Cmd                           = `use ${ aModel.padStart(7) } controllers${ bUseDefault ? ' to  replace default controllers if defined' : ',  without default controllers' }`  // .(11111.01.15)
+            trace( `${aModel.padEnd(8) }  ControllersFilename: ..${ pOptions.ControllersFilename.replace( /.+FormR/, 'FormR' ) }` )           // .(11111.01.16)
+            trace( `${aModel.padEnd(8) }  Cmd:                   ${ pOptions.Cmd.replace( /^replace/, 'dont use' ) }` )                       // .(11111.01.17)
+
             getControllerRoutes(   aTable,    aModel,  pRoutes_,  pControllers_, pOptions )                 // merge controller routes with default controller routes
 
         if (String(aShowEm).match( /^showset$/i )) {                                                        // .(10315.13.1 RAM Changed from showem)
@@ -100,12 +121,18 @@
 // --------------------------------------------------------------------------------------------------------------------------          
 
 // function getControllerRoutes( aTable,  aModel,   pRoutes_, pControllers_, pOptions ) {   trace( )        // called by getControllers above
-   function getControllerRoutes( aTable,  aModel_,  pRoutes_, pControllers_, pOptions ) {   trace( )        // .(10328.01.2 RAM The actual model if this is for the _default controllers)
+   function getControllerRoutes( aTable,  aModel_,  pRoutes_, pControllers_, pOptions ) {   trace( aTable ) // .(10328.01.2 RAM The actual model if this is for the _default controllers)
 //          aModel              =   aModel        ? aModel  : aTable                                        //#.(10319.08.1 RAM Only works if aModel is passed as '')           
         var aModel              =   pControllers_ ? aModel_ : aTable                                        // .(10319.08.1 RAM Only works if aModel is passed as '').(10328.01.3 RAM pControllers_ is also MT).(10328.03.1 RAM Make aModel local)          
         var aCmd                =   pOptions     && pOptions.Cmd  ? pOptions.Cmd  : ''
+        var aControllersFile    =   pOptions.ControllersFilename                                            // .(10303.06.2)
+       
+        var bUseDefaultControlr =   aCmd.match( /^(dont|replace)/ ) == null                                 // .(11111.01.2 Beg RAM)
+        if (bUseDefaultControlr ==  false && aModel == '_default' ) {                                       // .(11111.01.2 RAM Don't use _default Controller)
+            trace( `Not using aControllersFile, '${aControllersFile}',  for model: ${aModel}` )
+            return  
+            }                                                                                               // .(11111.01.2 End)
 
-        var aControllersFile    =   pOptions.ControllersFilename                                                                        // .(10303.06.2)
 //      var pRoutes_            =   pRoutes_      ? pRoutes_      : require( `../Controllers/${aModel}.controllers.njs` ).Routes        // .(10303.06.3)
 //      var pControllers_       =   pControllers_ ? pControllers_ : require( `../Controllers/${aModel}.controllers.njs` ).Controllers   // .(10303.06.4).(10327.04.x RAM Could be moved to FORMRs_4)
         var pRoutes_            =   pRoutes_      ? pRoutes_      : require(    aControllersFile ).Routes                               // .(10303.06.3)
@@ -113,9 +140,10 @@
         var pControllers_       =  ( typeof( pControllers_ ) !=  'function' ) ? pControllers_  :  pControllers_( aModel_ )              // .(10328.01.13 Need to tell _default.controllers the model for it )
 
             pControllers_       =   chkControllers( aTable, pRoutes_, pControllers_ )                       // check that all routes action names exist as controler functions
-
+                                                                                                            // .(10319.11.2 RAM Beware FName might not be found in chkControllers)
         var pControllers        =   { }
-        if (aCmd.match(   /'^replace/ ) == null) {                                                          // .(10319.11.2 RAM Beware FName might not be found in chkControllers)
+//      if (aCmd.match(   /'^replace/ ) == null) {                                                          //#.(11111.01.3 RAM This seems to always be true??)                                                      
+        if (bUseDefaultControlr == true) {                                                                  // .(11111.01.3 RAM It will always be true due to exit above)                                                      
         var pControllers        =   renControllerFns( aModel, pControllers_ )                               // If using _default controllers, change their function names to ActionNames: `${aModel}.controller.${aAction}`
             }
 

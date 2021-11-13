@@ -17,7 +17,7 @@
 //          pRouter.use(   require( `${mApps[1]}/routes/world.routes.njs` ) )           // .(10917.02.8)
 //          pRouter.use(   require( `${FORMRs_4_API}/routes/formr.routes.njs` ) )       //#.(10414.02.11 RAM This sets up the FORMR App in the hidden location).(109017.02.5)
             pRouter.use(   require( `${mApps[3]}/routes/rauth.routes.njs` ) )           // .(10917.01.2  RAM Use seperate script).(109017.02.6)
-            pRouter.use(   require( `${mApps[3]}/routes/admin.routes.njs` ) )           // .(10917.01.3  RAM Use seperate script).(109017.02.7)
+            pRouter.use(   require( `${mApps[0]}/routes/admin.routes.njs` ) )           // .(10917.01.3  RAM Use seperate script).(109017.02.7)
 //          pRouter.use(   require( `${mApps[5]}/routes/iodd.routes.njs`  ) )           // .(10917.02.9).(10921.01.3 End)
 
 // -------------------------------------------------------------------------------------
