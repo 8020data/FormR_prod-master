@@ -10,19 +10,16 @@
         var bcrypt              =  require( 'bcryptjs'     );
 
 //    const config              =  require("../config/auth.config");                                        //#.(10227.03.2)
-//      var aSecret             = 'bezkoder-secret-key'                                                     // .(10227.03.2).(10317.01.1)
+//      var aSecret             = 'bezkoder-secret-key'                                                     //#.(10227.03.2).(10317.01.1)
         var aJWTkey             =  require( `${FORMRs_3}JWT_Config1-0.njs`).Key                             // .(10317.01.2)
         var aSalt               = '$2a$04$qy3HhHlVJT/wUB364EVjmu'                                           // .(10416.04.1 RAM Need this for bcrypt.hash to match)
 
-            AUTH                = 'rauth'                                                                   // .(10330.08.1 RAM Should it 'auth' or 'formr'?).(10909.01.9 RAM or 'rauth')
+            AUTH                = 'rauth'                                                                   // .(10330.08.1 RAM Should it 'auth' or 'formr'?).(10909.01.9 RAM or 'rauth', or 'frauth')
 //          bQuiet              =  true
 
       if (! process.env.DBSN) {
-            process.env.DBSN    = 'MySQL_AWS_IO' }
-
-
-
-
+            process.env.DBSN    = 'MySQL_AWS_IO' 
+            }
 // --------------------------------------------------------------------------------------------------
 
 //      var aTable              = `${AUTH}/auth                                                             // .(10329.02.1 RAM Was 'auth').(10330.08.2)
@@ -57,13 +54,12 @@
         var pRoutes  =  //  {  aRoute                            : [ aRoles,    aController ] = mControllerRoles }
                { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
-               { 'http.post    /api/${aTable}/register/        ' : [ '      E', 'register            ' ]    // .(10228.12.1).(10305.03.1 RAM S.B http.post, not get)
+               , 'http.post    /api/${aTable}/register/        ' : [ '      E', 'register            ' ]    // .(10228.12.1).(10305.03.1 RAM S.B http.post, not get)
                , 'http.post    /api/${aTable}/login/           ' : [ '      E', 'login               ' ]    // .(10228.12.2).(10305.03.2)
                , 'http.get     /api/${aTable}/session/         ' : [ '      E', 'session             ' ]    // .(10312.10.1 RAM Let's add it here)
-//             , 'http.get     /api/${aTable}/test/            ' : [ '      E', 'test                ' ]    // .(10312.11.2 RAM Let's test Controller1).(10917.09.5 RAM Was controller1)
                , 'http.get     /api/${aTable}/test/            ' : [ '      I', 'test                ' ]    // .(10917.09.7 RAM Let's test this controller).(10918.04.2)
                   }
-            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
+            delete pRoutes[ 'Method        Route (Order is important!)    ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -96,11 +92,7 @@
           {  username    :  req.body.username
           ,  email       :  req.body.email
           ,  active      :  req.body.active ? req.body.active : 'yes'                   // .(10314.04.1 RAM Added)
-
-//        ,  role        :  req.body.role   ? req.body.role   : 'user'                  //#.(10312.05.1 RAM Added).(10415.06.1) 
-//        ,  role        :  req.body.role   ? req.body.role   : 'viewer'                // .(10415.06.1 RAM New Default User role)
           ,  role        :  req.body.role   ? req.body.role   :  aNewRole               // .(10416.06.3)
-
           ,  passworddate:  addDate( 90 )                                               // .(10314.06.2) 
 
 //        ,  password    :  bcrypt.hashSync(  req.body.password, aSalt )                //#.(10416.04.2 RAM Was , 8)
@@ -150,8 +142,8 @@
         if (!user) {             trace(  "User Not found.".padStart( 4 + 15 ) )         // .(10228.05.x)
                                  return res.status(404).send( { message: "User Not found." } ); 
                                  }
-                                 trace(   `    Checking Passwords: '${req.body.password}'` )         
-                                 trace(   `       vs stored in DB: '${user.password}'`     )         
+                                 trace(   `    Checking Passwords: '${req.body.password} (un-encrypted via API)'` )         
+                                 trace(   `      vs. stored in DB: '${user.password}'`     )         
           var passwordIsValid  = bcrypt.compareSync( req.body.password, user.password   );
          if (!passwordIsValid) {
                                  trace(  "Invalid Password.".padStart( 4 + 17 ) )       // .(10228.05.x)
@@ -216,12 +208,12 @@
            .then( function chkUserSession( pUser ) {
             var aRole       =  pUser.role
             var aUsername   =  pUser.username
-            var aMsg        = `${'This session is validated for'.padStart( 21 + 29 )} ${aUsername} with ${aRole} privileges.`                                
+            var aMsg        = `${'This session is validated for'.padStart( 4 + 29 )} ${aUsername} with ${aRole} privileges.`    // .(11112.03.1 RAM Was 21 + 29)                              
                                trace( aMsg )
             res.status(  200 ).send(  aMsg )
                                return
                                } )
-           .catch( err => {    trace( "Session failed.".padStart( 21 + 15 ) )
+           .catch( err => {    trace( "Session failed.".padStart( 4 + 15 ) )                                                    // .(11112.03.2 RAM Was 21 + 15)                              
             res.status(  500 ).send( { message: "Session failed", err: err } );
                                return
                                } );
@@ -259,10 +251,10 @@
 
    function verify( aToken, onVerify ) {
 
-        var jwt     =  require( 'jsonwebtoken' )
-        var aSecret = 'bezkoder-secret-key'
+//      var jwt     =  require( 'jsonwebtoken' )                                    //#.(11112.02.1)
+//      var aSecret = 'bezkoder-secret-key'                                         //#.(11112.02.2)
       try {
-        var pToken  =  jwt.verify( aToken, aSecret )
+        var pToken  =  jwt.verify( aToken, aJWTkey )                                // .(11112.02.3 RAM Was aSecret).(10317.01.2 See above)
    } catch( pErr ) {
         var pToken  = { message: 'BAD Token', err: pErr }
             }
