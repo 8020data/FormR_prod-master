@@ -1,15 +1,15 @@
 
 if (__filename == process.mainModule.filename) {                                                      // .(10317.04.8 RAM Globals are set in Route.njs)
 
-        pRequest = 
-         {  method  : 'get' 
-         ,  url     : 'http://localhost:50416/api/formr/users/2' 
-            }      
-            request( pRequest  ).then(  onSuccess ).catch( onFailure )
+            pRequest =
+             {  method  : 'get'
+             ,  url     : 'http://localhost:50253/api/formr/users'
+                }
+            request( pRequest ).then( onSuccess ).catch( onFailure )
 
-   function onSuccess( pBody ) { console.log( "Response:\n", require('util').inspect( pBody, { depth: 99 } ) ) }
-   function onFailure( pErr  ) { console.log(  require('util').inspect( pErr ) ) }
-
+  function  onSuccess( pBody ) { console.log( "Response:\n", inspect( pBody ) ) }
+  function  onFailure( pErr  ) { console.log(                inspect( pErr  ) ) }
+  function  inspect(   pObj  ) { return require('util').inspect( pObj, { depth: 99 } ) }
       }
 //    -----------------------------------------------------------------
 
@@ -21,18 +21,18 @@ if (__filename == process.mainModule.filename) {                                
         var pHTTP    =  require( pURL.protocol == 'https:' ? 'https' : 'http' );
 
         var pOptions =
-             {  method  : pRequest.method.toUpperCase()
-             ,  host    : pURL.hostname
-             ,  port    : pURL.port || (pURL.protocol == 'https:' ? 443 : 80 )
-             ,  path    : pURL.path || "/"
-             ,  headers : pRequest.headers || {} 
+             {  method  :  pRequest.method.toUpperCase()
+             ,  host    :  pURL.hostname
+             ,  port    :  pURL.port || (pURL.protocol == 'https:' ? 443 : 80 )
+             ,  path    :  pURL.path || "/"
+             ,  headers :  pRequest.headers || {}
                 }
-         
+
 //      --- --------------------------------------------------
 
      return new Promise( ( resolve, reject ) => {
 
-        var pReq     =  pHTTP.request( pOptions
+        var pReq       =  pHTTP.request( pOptions
 
 //      --- ---------------------------------------------
 
@@ -43,7 +43,7 @@ if (__filename == process.mainModule.filename) {                                
             }
 //          ----------------------------------------
 
-        var pResponse =                                     // Response object.
+        var pResponse  =                                     // Response object.
              {  statusCode: pRes.statusCode
              ,  headers:    pRes.headers
              ,  body: [ ]
@@ -58,16 +58,17 @@ if (__filename == process.mainModule.filename) {                                
             pRes.on(  'end',  ( )   =>  {
 
         if (pResponse.body.length) {
-            pResponse.body = pResponse.body.join();
-      try { pResponse.body = JSON.parse( pResponse.body );
-        } catch( pErr ) { }                                 // Silently fail if response is not JSON.
-            } // eif pResponse.body.length
+            pResponse.body  =              pResponse.body.join();
+      try { pResponse.body  =  JSON.parse( pResponse.body );
+        } catch( pErr ) {                                          // Silently fail if response is not JSON.
+     return reject( new Error( `JSON parse error: ${ pErr }` ) );  // .(11114.01.1 RAM Maybe we shoudl throw something)
+        }   } // eif pResponse.body.length
 
-                                  resolve( pResponse )
-//                                resolve( Buffer.concat( pResponse ).toString( ) ) );
+            resolve( pResponse )
+//          resolve( Buffer.concat( pResponse ).toString( ) ) );
             } ) // eof pRes.on
 //          ----------------------------------------
-            } ) // eof onResponse  
+            } ) // eof onResponse
 //      --- ---------------------------------------------
 
             pReq.on(   "error",   reject );
@@ -77,9 +78,9 @@ if (__filename == process.mainModule.filename) {                                
         if (pRequest.data) {
 //          pReq.write( String( pRequest.data ) );          //#.(10404.04.7 RAM Why did I put String( aObject )?)
         var aData = (typeof( pRequest.data) == 'object')    // .(10404.04.7 RAM Cuz it has to be a string)
-          ?  JSON.stringify( pRequest.data )                // .(10404.04.8 RAM is the Content.length header correct?) 
+          ?  JSON.stringify( pRequest.data )                // .(10404.04.8 RAM Is the Content.length header correct?)
           :          String( pRequest.data )
-            pReq.write(  aData );                           // send POST or PUT data 
+            pReq.write(  aData );                           // send POST or PUT data
             }
 //          ----------------------------------------
 

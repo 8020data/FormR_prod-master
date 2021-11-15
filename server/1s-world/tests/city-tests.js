@@ -60,7 +60,8 @@
             pResult  =  await doTest_GetModel( );                    mResults.push( pResult )
 
             console.log( fmtResults( mResults ) )
-            } 
-      ) ( )
+
+            }  // eof doTests 
+      ) ( ) // eof async function call
 
 //   -----  ------------  =  --------------------------------------------------------

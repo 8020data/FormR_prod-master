@@ -35,6 +35,8 @@
         Object.keys(  pRoutes ).forEach( function fixTableRoute( aRoute ) {
 //      if (    aRoute.match( /api\/[^${]/ )) {                                         // if not /api/${aTable}/action or /route/action, then
         if (aRoute == 'ControllersFile') { return }                                     // .(10318.06.2 RAM This is what happens when you stick ControllersFile into pTableRoutes)
+        if (aRoute.match( /^ *Method/ )) { return }                                     // .(11111.05.3)
+
         var bNotAPI = aRoute.match( /^\/*((?!api).)*$/ ) != null                        // Allow for /route/action            .(10318.03.1)
     if (! ( aRoute.match( /\/api.*\/\${aTable}/ ) || bNotAPI )) {                       // if not /api/${aTable}/action, then .(10318.03.2 RAM or DB in route, i.e. /api/fr/${aTable}/action)
             aRoute  = aRoute.replace( / +/g, ' ' ).replace( / $/, '')
@@ -69,6 +71,8 @@
         var pNewRoutes= (aTable  ==  aDefault ) ? { } : pTableRoutes[ aTable ];
             Object.keys( pTableRoutes[ aTable ] ).forEach( function setNewRoute( aRoute ) {
         if (aRoute   == 'ControllersFile') { return }                                   // .(10318.06.2 RAM This is what happens when you stick ControllersFile into pTableRoutes)
+        if (aRoute.match( /^ *Method/ )  ) { return }                                   // .(11111.05.2)
+
         var mOldRoute =  pTableRoutes[ aTable ][ aRoute ]
                      if (aTable  ==  aDefault ) {
                          aRoute   =   aRoute.replace( /\$\{aTable\}/, aNewTable ) }     // insert table name into default route

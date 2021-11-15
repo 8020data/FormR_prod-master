@@ -12,7 +12,8 @@
 //    const config              =  require("../config/auth.config");                                        //#.(10227.03.2)
 //      var aSecret             = 'bezkoder-secret-key'                                                     //#.(10227.03.2).(10317.01.1)
         var aJWTkey             =  require( `${FORMRs_3}JWT_Config1-0.njs`).Key                             // .(10317.01.2)
-        var aSalt               = '$2a$04$qy3HhHlVJT/wUB364EVjmu'                                           // .(10416.04.1 RAM Need this for bcrypt.hash to match)
+        var aSalt_inTransit     = '$2a$04$qy3HhHlVJT/wUB364EVjmu'                                           // .(10416.04.1 RAM Need this for bcrypt.hash to match).(11113.01.1 RAM Was: aSalt)
+        var aSalt_atRest        =  8                                                                        // .(11113.01.2 RAM For DB storage)
 
             AUTH                = 'rauth'                                                                   // .(10330.08.1 RAM Should it 'auth' or 'formr'?).(10909.01.9 RAM or 'rauth', or 'frauth')
 //          bQuiet              =  true
@@ -29,7 +30,7 @@
 
 //      --------------------------------------------------------------------------------------------------
 
-        var aFName               = `${aModel}.controller`
+        var aFName              = `${aModel}.controller`
 
         var pConfig         ={ ControllersFilename: __filename }                                            // .(10301.03.1 RAM Let's try saving the file name)
 //          pConfig.Cmd     = `use default controllers`                                                     // .(11111.01.1 RAM Let's set it to use the default controllers)
@@ -72,10 +73,10 @@
 
           , getModel        :  function getModel( req, res ) { trace( `${aModel}.model` )
 
-//          var aModel_JSON =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.1 RAM Use fruser to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
-            var aModel_JSON =  JSON.stringify( pModel.RSchema )                                                       // .(10903.01.1 RAM Get a Live version)
+//          var aModel_JSON =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' )       //#.(10414.04.1 RAM Use fruser to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
+            var aModel_JSON =  JSON.stringify( pModel.RSchema )                                                             // .(10903.01.1 RAM Get a Live version)
 
-                               res.json( JSON.parse( aModel_JSON ) )                                                  // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
+                               res.json( JSON.parse( aModel_JSON ) )                                                        // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
 
             } // eof `${aFName}.getModel`
 //          ------------------------------------------------------------------
@@ -83,48 +84,57 @@
 , register  : function register( req, res ) { trace( `    username: ${req.body.username}` ) // .(10228.12.3)
 
 //   var addDate  = function( n, d )  { return fmtDate( 6, new Date( d.setDate( d.getDate() + n ) ) ).substr( 0, 10 ) }
-     var addDate  = function( n, d )  { return fmtDate( 6, d, n ).substr( 0, 10 ) }     // .(10314.06.1 RAM Use fmtDate)
+     var addDate  = function( n, d )  { return fmtDate( 6, d, n ).substr( 0, 10 ) }                                         // .(10314.06.1 RAM Use fmtDate)
 
-     var aNewRole =  req.body.username.match( /admin/  ) ? 'admin'  : 'viewer'          // .(10416.06.1 RAM Cute) 
-         aNewRole =  req.body.username.match( /editor/ ) ? 'editor' :  aNewRole         // .(10416.06.2)   
+     var aNewRole =  req.body.username.match( /admin/  ) ? 'admin'  : 'viewer'                                              // .(10416.06.1 RAM Cute. The default roles if admin or editor is contained in the username) 
+         aNewRole =  req.body.username.match( /editor/ ) ? 'editor' :  aNewRole                                             // .(10416.06.2)   
+
+     if (req.body.password.match( /^\$(.){50,60}/ ) == null) {                                                              // .(11113.01.3 Beg RAM HASH it if not already).(11114.04.1 RAM was: {59}, could be {50} as it means at least)
+                                        trace( `    Encrypting Password: '${ req.body.password }' (un-encrypted)` )         // .(11114.05.1 RAM More info)
+         req.body.password  = bcrypt.hashSync( req.body.password, aSalt_inTransit )
+                                        trace( `                     to: '${ req.body.password }' (encrypted InTransit)` )  // .(11114.05.2)         
+     } else {                                        
+                                        trace( `     Receiving Password: '${ req.body.password }' (encrypted InTransit)` )  // .(11114.05.3)
+         }                                                                                                                  // .(11113.01.3 End)
 
      var pNewUser =
-          {  username    :  req.body.username
-          ,  email       :  req.body.email
-          ,  active      :  req.body.active ? req.body.active : 'yes'                   // .(10314.04.1 RAM Added)
-          ,  role        :  req.body.role   ? req.body.role   :  aNewRole               // .(10416.06.3)
-          ,  passworddate:  addDate( 90 )                                               // .(10314.06.2) 
+          {  username       :  req.body.username
+          ,  email          :  req.body.email
+          ,  active         :  req.body.active       ? req.body.active       : 'yes'                                // .(10314.04.1 RAM Added)
+          ,  role           :  req.body.role         ? req.body.role         :  aNewRole                            // .(10416.06.3)
+          ,  passworddate   :  req.body.passworddate ? req.body.passworddate :  addDate( 90 )                       // .(10314.06.2) 
 
-//        ,  password    :  bcrypt.hashSync(  req.body.password, aSalt )                //#.(10416.04.2 RAM Was , 8)
-//        ,  password    :                    req.body.password                         //#.(10416.04.8 RAM It'coming in encrypted)
-          ,  password    :  bcrypt.hashSync(  req.body.password, 8 )                    // .(10416.04.9 RAM But needs to be encrypted again to go into the DB)
+//        ,  password       :  bcrypt.hashSync(  req.body.password, aSalt_inTransit )                               //#.(10416.04.2 RAM Was , 8).(11113.01.3 RAM was: aSalt)
+//        ,  password       :                    req.body.password                                                  //#.(10416.04.8 RAM It'coming in encrypted)
+          ,  password       :  bcrypt.hashSync(  req.body.password, aSalt_atRest )                                  // .(10416.04.9 RAM But needs to be encrypted again to go into the DB).(11113.01.5 RAM was: 8)
              }
 
       User.create( pNewUser )
 
-     .then( function onAddUser( user ) {                                                // .(10228.04.4 RAM Get rid of anonymous function)
+          .then( function onAddUser( user ) {                                                                       // .(10228.04.4 RAM Get rid of anonymous function)
 
      if (req.body.roles) {
 
          Role.findAll( { where: { name: { [Op.or]: req.body.roles } } } )
 
-             .then( roles => {   user.setRoles( roles )                                                     // .(10312.06.1 RAM This Sequilize method stores each role in {req.body.roles} into the related tables 'user_roles')
-                                     .then( function setRole( ) {                                           // .(10228.04.4 RAM Get rid of anonymous function)
-                             var aRoles =  roles.map( ( aRole, i ) => roles[i].name ).join( ',' )           // .(10311.05.5 Beg RAM SAve list of roles)
-                             var aMsg   = `User registered successfully for role(s): ${ aRoles }.`
-                                 res.send( { message: aMsg } ); trace( aMsg.padStart( 4 + aMsg.length ) );  // .(10228.05.x RAM user roles).(10311.05.5 End)
+             .then( roles => {   user.setRoles( roles )                                                             // .(10312.06.1 RAM This Sequilize method stores each role in {req.body.roles} into the related tables 'user_roles')
+                                     .then( function setRole( ) {                                                   // .(10228.04.4 RAM Get rid of anonymous function)
+                             var aRoles =  roles.map( ( aRole, i ) => roles[i].name ).join( ',' )                   // .(10311.05.5 Beg RAM SAve list of roles)
+                             var aMsg   = `User ${user.id} registered successfully for role(s): ${ aRoles }.`       // .(11113.10.4)
+                                 res.send( { message: aMsg } ); trace( aMsg.padStart( 4 + aMsg.length ) );          // .(10228.05.x RAM user roles).(10311.05.5 End)
                      } );        } );
-     } else {  //                user.setRoles( [ 1 ]  )                                                    //#.(10312.06.1 RAM Not sure how [ 1 ] sets a non-existant role for the new user)
-               //                    .then( function setRole1( ) {                                          //#.(10228.04.4 RAM Get rid of anonymous function).(10312.06.2)
-                             var aMsg   = `User registered successfully for role: ${ pNewUser.role }.`      // .(10312.06.3 RAM Was: .roles[0])
+     } else {  //                user.setRoles( [ 1 ]  )                                                            //#.(10312.06.1 RAM Not sure how [ 1 ] sets a non-existant role for the new user)
+               //                    .then( function setRole1( ) {                                                  //#.(10228.04.4 RAM Get rid of anonymous function).(10312.06.2)
+                             var aMsg   = `User ${user.id} registered successfully for role: ${ pNewUser.role }.`   // .(10312.06.3 RAM Was: .roles[0])//.(11113.10.5)
+                                                                trace( `     being stored in DB: '${ pNewUser.password }' (encrypted atRest)` )         
                                  res.send( { message: aMsg } ); trace( aMsg.padStart( 4 + aMsg.length ) );
-               //                } );                                                                       // .(10228.05.x RAM user role[1]).(10311.05.5 End)
-//                               trace("User registered successfully!" )                                    //#.(10228.05.x RAM user role = 1).(10311.05.6)
-//                               res.send( { message: "User registered successfully!" } ); } );             //#.(10311.05.6)
+               //                } );                                                                               // .(10228.05.x RAM user role[1]).(10311.05.5 End)
+//                               trace("User registered successfully!" )                                            //#.(10228.05.x RAM user role = 1).(10311.05.6)
+//                               res.send( { message: "User registered successfully!" } ); } );                     //#.(10311.05.6)
               }
         } )
     .catch( err => {
-                                 trace(  `${ "Registration failed!".padStart( 4 + 20 ) }\n` + err.message )  // .(10228.05.x)
+                                 trace(  `${ "Registration failed!".padStart( 4 + 20 ) }\n` + err.message )         // .(10228.05.x)
             res.status( 500 ).send({ message: err.message } ); } );
 
      } // eom register( req, res ) { ... }
@@ -133,67 +143,75 @@
 
 //   ------------------------------------------------------------------------------------------
 
-, login   : function login( req, res )    { trace( `    ${req.body.username}` )         // .(10228.12.4)
+, login   : function login( req, res )    { trace( `\nLogin for ${req.body.username}` )             // .(10228.12.4)
 
     User.findOne( { where: { username: req.body.username } } )
 
-    .then( function chkUser( user ) {                                                   // .(10228.04.4 RAM Get rid of anonymous function)
+    .then( function chkUser( user ) {                                                               // .(10228.04.4 RAM Get rid of anonymous function)
 
-        if (!user) {             trace(  "User Not found.".padStart( 4 + 15 ) )         // .(10228.05.x)
+        if (!user) {             trace(  "User Not found.".padStart( 4 + 15 ) )                     // .(10228.05.x)
                                  return res.status(404).send( { message: "User Not found." } ); 
                                  }
-                                 trace(   `    Checking Passwords: '${req.body.password} (un-encrypted via API)'` )         
-                                 trace(   `      vs. stored in DB: '${user.password}'`     )         
-          var passwordIsValid  = bcrypt.compareSync( req.body.password, user.password   );
+           if (req.body.password.match( /^\$(.){50,60}/ ) == null) {                                // .(11113.01.6 Beg RAM Check if sent unhashed).(11114.04.2)                              
+                                 trace(   `    Checking Password:   '${req.body.password}' (un-encrypted)` )
+             req.body.password = bcrypt.hashSync(  req.body.password, aSalt_inTransit )        
+              }                                                                                     // .(11113.01.6
+                                 trace(   `    Checking Password:   '${req.body.password}' (encrypted inTransit)` )         
+                                 trace(   `       vs. stored in DB: '${user.password}' (encrypted atRest)`     )         
+
+          var passwordIsValid  = bcrypt.compareSync( req.body.password, user.password );
          if (!passwordIsValid) {
-                                 trace(  "Invalid Password.".padStart( 4 + 17 ) )       // .(10228.05.x)
+                                 trace(  "Invalid Password.".padStart( 4 + 17 ) )                   // .(10228.05.x)
                                  return res.status(401).send( { accessToken: null, message: "Invalid Password!" } ); 
                                  }
-//        var token = jwt.sign( { id: user.id }, config.secret, { expiresIn: 86400 } )  //#.(10227.03.3 RAM 86400 = 24 hours)
-          var token = jwt.sign( { id: user.id },       aJWTkey, { expiresIn: 86400 } )  // .(10227.03.3 RAM Was: config.secret, 86400 = 24 hours).(10317.01.1 Was aSecret)
-/*                                                                                      //#.(10415.05.2 Beg)
-          var authorities = [], aRoles = ""                                             // .(10311.05.4)
-              user.getRoles( ).then( function setRoles( roles ) {                       // .(10228.04.4 RAM Get rid of anonymous function)
-//                           var aRoles = user.getRoles().join( ",")                    //#.(10311.05.1 RAM user.getRoles() is a promise not an array)
-//                           var aRoles = roles.join( ",")                              //#.(10311.05.3 RAM roles is a array of sequelize objects)
-         for (let  i = 0;  i  <  roles.length;  i++) {
-                                 aRoles = `${aRoles},${roles[i].name}`                  // .(10311.05.5)
+//        var token = jwt.sign( { id: user.id }, config.secret, { expiresIn: 86400 } )              //#.(10227.03.3 RAM 86400 = 24 hours)
+          var token = jwt.sign( { id: user.id },       aJWTkey, { expiresIn: 86400 } )              // .(10227.03.3 RAM Was: config.secret, 86400 = 24 hours).(10317.01.1 Was aSecret)
+/*                                                                                                  //#.(10415.05.2 Beg)
+          var authorities = [], aRoles = ""                                                         // .(10311.05.4)
+              user.getRoles( ).then( function setRoles( roles ) {                                   // .(10228.04.4 RAM Get rid of anonymous function)
+//                           var aRoles = user.getRoles().join( ",")                                //#.(10311.05.1 RAM user.getRoles() is a promise not an array)
+//                           var aRoles = roles.join( ",")                                          //#.(10311.05.3 RAM roles is a array of sequelize objects)
+         for (let  i = 0;  i  <  roles.length;  i++) {            
+                                 aRoles = `${aRoles},${roles[i].name}`                              // .(10311.05.5)
               authorities.push( "ROLE_" + roles[i].name.toUpperCase() );
               }
                              var nWdt   =  4 + 29 + aRoles.length - 1
                                  trace(  `Login successful for roles: '${ aRoles.substr(1) }'.`.padStart( nWdt ) )   // .(10228.05.x).(10311.05.2)
 */                                                                                                                   //#.(10415.05.2 End)
-                                 trace(  `    Login successful for role: '${ user.role }'.` )                        // .(10415.05.3)
+//                               trace(  `    Login successful for role: '${ user.role }'.` )                        // .(10415.05.3)
+                                 trace(  `    Logged in with role: '${ user.role }', user.id: ${ user.id }` )  
           var pData =                                                                                                // .(10312.01.1 RAM Need to see it when debugging)
                {  id           : user.id
                ,  username     : user.username
                ,  email        : user.email
-//             ,  password     : user.password                                          // .(10312.01.1 RAM Don't send this)
-               ,  active       : user.active                                            // .(10311.08.1 RAM Add fields for Bruce)
-               ,  group        : user.group                                             // .(10312.02.1 RAM Added)
-               ,  role         : user.role                                              // .(10311.08.2)
-//             ,  user_roles   : authorities                                            // .(10415.05.1 RAM Not needed)
-               ,  passworddate : user.passworddate                                      // .(10311.08.3)
-               ,  createdAt    : String(user.createdAt)                                 // .(10311.08.3 string violation: createdAt cannot be an array or an object,
-               ,  updatedAt    : String(user.updatedAt)                                 // .(10311.08.4 string violation: updatedAt cannot be an array or an object,)
+//             ,  password     : user.password                                                      // .(10312.01.1 RAM Don't send this)
+               ,  active       : user.active                                                        // .(10311.08.1 RAM Add fields for Bruce)
+               ,  group        : user.group                                                         // .(10312.02.1 RAM Added)
+               ,  role         : user.role                                                          // .(10311.08.2)
+//             ,  user_roles   : authorities                                                        // .(10415.05.1 RAM Not needed)
+               ,  passworddate : user.passworddate                                                  // .(10311.08.3)
+               ,  createdAt    : String(user.createdAt)                                             // .(10311.08.3 string violation: createdAt cannot be an array or an object,
+               ,  updatedAt    : String(user.updatedAt)                                             // .(10311.08.4 string violation: updatedAt cannot be an array or an object,)
                ,  accessToken  : token
                   };
 
               res.status( 200 ).send( pData )
 
-//        } ); // user.getRoles(        ).then( function setRoles( roles ) { ... } )    //#.(10415.05.2)
+//        } ); // user.getRoles(        ).then( function setRoles( roles ) { ... } )                //#.(10415.05.2)
         } )    // User.findOne( { ... } ).then( function chkUser(  user  ) { ... } )
 
-    .catch( err => {             trace(  "Login failed.".padStart( 4 + 13 ) )           // .(10228.05.x)
+    .catch( err => {             trace(  "Login failed.".padStart( 4 + 13 ) )                       // .(10228.05.x)
                                  res.status( 500 ).send( { message: err.message } );
             } );
 
      }  // eof login( req, res ) { ... }
 //   ------------------------------------------------------------------------------------------
 
-, session : function session( req, res ) { trace( `    req.headers.x-access-token` )    // .(10312.12.1 Beg RAM)
+, session : function session( req, res ) {  // trace( `    req.headers.x-access-token` )                // .(10312.12.1 Beg RAM)
 
-       var  aToken = req.headers[ 'x-access-token']
+       var  aToken = req.headers[ 'x-access-token']; 
+                               trace( `    x-access-token:      '${ aToken.substr( 0, 70 ) }\n${ aToken.substr( 70 ).padStart( 86 + 70 ) }'` )
+               
        var  pToken = verify( aToken )
 
         if (pToken.err) {      trace( "       Invalid token" )
@@ -251,10 +269,10 @@
 
    function verify( aToken, onVerify ) {
 
-//      var jwt     =  require( 'jsonwebtoken' )                                    //#.(11112.02.1)
-//      var aSecret = 'bezkoder-secret-key'                                         //#.(11112.02.2)
+//      var jwt     =  require( 'jsonwebtoken' )                                        //#.(11112.02.1)
+//      var aSecret = 'bezkoder-secret-key'                                             //#.(11112.02.2)
       try {
-        var pToken  =  jwt.verify( aToken, aJWTkey )                                // .(11112.02.3 RAM Was aSecret).(10317.01.2 See above)
+        var pToken  =  jwt.verify( aToken, aJWTkey )                                    // .(11112.02.3 RAM Was aSecret).(10317.01.2 See above)
    } catch( pErr ) {
         var pToken  = { message: 'BAD Token', err: pErr }
             }
@@ -271,7 +289,7 @@
             }
 // --------------------------------------------------------------------------------------------------------
 
-     module.exports    =
+   module.exports =
              {  TableName   :   aTable
              ,  ModelName   :   aModel
              ,  Routes      :   pRoutes
@@ -279,9 +297,8 @@
              ,  Options     :   pConfig                                                 // .(10301.03.3)
                 }
 
-            trace(  "\nmodule.exports" )
+            trace( 'module.exports', __filename )                                       // .(11113.03.5)    
 
-// --------------------------------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
      nDoTests = 1

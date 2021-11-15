@@ -11,7 +11,7 @@
 
 // --------------------------------------------------------------
 
-                                   trace(  "module.exports" )
+                                   trace( 'module.exports', __filename )                            // .(11113.03.6)
 
      module.exports             =  getAuthRoutes()                                                  // .(10313.01.1)
 
@@ -38,27 +38,27 @@
             pTableRoutes     =  {}                                                                  // .(10319.05.x RAM Create new set of pTableRoutes
             pTableRoutes     =  getControllers( pAuthControllers )                                  // .(10319.05.5)
 
-            delete pTableRoutes[AUTH][`http.post    /api/${AUTH}/register/`.padEnd( TheRouteWdt ) ] // .(10330.08.1 RAM Should it 'rauth' or 'formr'?).(10331.04.2).(11111.02.1 RAM ReDefined with mmiddleware below)
+            delete pTableRoutes[AUTH][`http.post    /api/${AUTH}/register/`.padEnd( TheRouteWdt ) ] // .(10330.08.1 RAM Should it 'rauth' or 'formr'?).(10331.04.2).(11111.02.1 RAM Redefined with mmiddleware below)
             delete pTableRoutes[AUTH][`http.post    /api/${AUTH}/login/   `.padEnd( TheRouteWdt ) ] // .(10330.08.2).(10331.04.3)
 
 //          --------------------------------------------------------------------------------
-                                                                                                    //#.(10917.01.1 Beg RAM Move to admin.routes.njs).(11109.11.1 RAM set it here)
-   const    pUserControllers =  require( `${FORMRs_4_API}/controllers/fruser.controllers.njs` );    // .(10319.05.2).(10328.06.2).(10331.03.2 RAM Changed file name).(11109.11.2 RAM Use FormRs_4_API)
-   const    pRoleControllers =  require( `${FORMRs_4_API}/controllers/frrole.controllers.njs` );    // .(10319.05.3).(10328.06.3).(10331.03.3).(11109.11.3)
+/*                                                                                                  //#.(10917.01.1 Beg RAM Move to admin.routes.njs).(11109.11.1 RAM set it here)
+   const    pUserControllers =  require( `${FORMRs_4_API}/controllers/fruser.controllers.njs` );    //#.(10319.05.2).(10328.06.2).(10331.03.2 RAM Changed file name).(11109.11.2 RAM Use FormRs_4_API)
+   const    pRoleControllers =  require( `${FORMRs_4_API}/controllers/frrole.controllers.njs` );    //#.(10319.05.3).(10328.06.3).(10331.03.3).(11109.11.3)
 
-            pTableRoutes     =  getControllers( pUserControllers )                                  // .(10319.05.4)
-            pTableRoutes     =  getControllers( pRoleControllers )                                  // .(10319.05.6)
+            pTableRoutes     =  getControllers( pUserControllers )                                  //#.(10319.05.4)
+            pTableRoutes     =  getControllers( pRoleControllers )                                  //#.(10319.05.6)
 
-            pRouter.use(        getAppRoutes(   pTableRoutes     ) )                                // .(10319.05.7)
+            pRouter.use(        getAppRoutes(   pTableRoutes   ) )                                  //#.(10319.05.7)
 
 //          --------------------------------------------------------------------------------
-                                                                                                    //#.(10917.01.1 End)
+*/                                                                                                  //#.(10917.01.1 End)
    const    verifySignUp     =  require(              '../Middleware/verifySignUp.js'  );           // .(10328.06.2 RAM Back to being a normal app)
 
             pRouter.post( `/api/${AUTH}/register`, [ verifySignUp.checkDuplicateUsernameOrEmail     // .(10330.08.3)
                                                  ,   verifySignUp.checkRolesExisted ]
 
-                                                 ,   pAuthControllers.Controllers.register );       // .(10227.04.1 RAM WAS controller).(10228.12.06).(10319.05.8 RAM Just the one controller)(11111.02.2)
+                                                 ,   pAuthControllers.Controllers.register );       // .(10227.04.1 RAM WAS controller).(10228.12.06).(10319.05.8 RAM Just the one controller).(11111.02.2)
 
             pRouter.post( `/api/${AUTH}/login`   ,   pAuthControllers.Controllers.login    );       // .(10228.12.07).(10319.05.9).(10330.08.4)
 

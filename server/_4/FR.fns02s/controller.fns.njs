@@ -170,6 +170,8 @@
  function chkControllers( aTable, pRoutes, pControllers ) { trace( aTable )
           Object.entries( pRoutes ).forEach( function chkController( [ aRoute, mRoute ] ) {
             if (aRoute     == 'ControllersFile') { return }                                                 // .(10318.06.3 RAM This is what happens when you stick ControllersFile into pTableRoutes)
+            if (aRoute.match( /^ *Method/ )    ) { return }                                                 // .(11111.05.4)
+ 
             var aFName      = (mRoute[1] || '').replace( / /g, '')
             var aFName      =  aFName.replace( /.+controllers*\./, '' )                                     // .(10319.11.1 RAM If the action has been renamed, strip leading `${aMode}.controller.`)
             if (aFName) {                                                                                   // The "remove" route has no controller

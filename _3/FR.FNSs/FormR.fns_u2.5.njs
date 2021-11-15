@@ -253,9 +253,10 @@ function getModel( pDB, aModel ) {
        var  aFR_app4c      =    'FR.app02c'
        var  aFR_fns4c      =    'FR.fns02c'
 
-       var  rFR_fns3s      = new RegExp(         `${aFR_fns3s}` )
-       var  rFR_app4s      = new RegExp( `_4[\\\/]${aFR_app4s}` )
-       var  rFR_fns4s      = new RegExp(         `${aFR_fns4s}` )                                           // .(10920.02.1 Beg RAM Use Vars)
+       var  rFR_fns3s      = new RegExp(            `${aFR_fns3s}` )
+//     var  rFR_app4s      = new RegExp(    `_4[\\\/]${aFR_app4s}` )                                        //#.(11114.07.1)
+       var  rFR_app4s      = new RegExp( `_4[\\\\\\/]${aFR_app4s}` )                                        // .(11114.07.1 RAM Eeah Gads, see below) 
+       var  rFR_fns4s      = new RegExp(            `${aFR_fns4s}` )                                        // .(10920.02.1 Beg RAM Use Vars)
 
 //          setAppDirs()                                                                                    // .(10402.04.x RAM Or here)
 
@@ -274,7 +275,8 @@ function getModel( pDB, aModel ) {
 //                             if ( APP_HOME.match(   /_4[\\\/]FR.app02s/ ) ) {                             //#.(10331.02.1 RAM Will we ever get it right).(10920.02.3)
 //          FORMRs_4       =    `${ APP_HOME.replace( /_4[\\\/]FR.app02s/,  '_4/FR.fns02s/' ) }` }          // .(10331.02.2).(10403.05.1 RAM I think FORMRs_4 = APP_HOME in this case).(10920.02.4)
             
-                               if ( APP_HOME.match(           rFR_app4s   ) ) {                             // .(10331.02.1 RAM Will we ever get it right).(10920.02.3)
+                               if ( APP_HOME.match(           rFR_app4s   ) ) {                             // .(10331.02.1 RAM Will we ever get it right).(10920.02.3).(11114.07.2 RAM This fixes FORMRs_4 from _4\FR.app02s to _4\FR.fns02s)
+                                                                                                            //                                                         .(10920.02.3 RAM Why not just always replace /app/ to 'fns')  
             FORMRs_4       =    `${ APP_HOME.replace(         rFR_app4s, `_4/${aFR_fns4s}`  ) }` }          // .(10331.02.2).(10403.05.1 RAM I think FORMRs_4 = APP_HOME in this case).(10920.02.4)
 
 //          FORMRc_4       =        FORMRs_4.replace(         /FR.fns02s/,     'FR.fns02c'  )               //#.(10920.02.5)
