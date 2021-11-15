@@ -11,11 +11,11 @@
        var  aRoute1      =  '/api/rauth/register'                                           
        var  aRoute2      =  '/api/formr/users'                                           
      
-       var  pBody        ={ 'username'     : 'robin6'
+       var  pBody        ={ 'username'     : 'robin8'
 //                        , 'email'        : 'robin.mattern@sicomm.net'       // .(10228.06.2 Email already in use)
-                          , 'email'        : 'robin6.mattern@sicomm.net'
+                          , 'email'        : 'robin8.mattern@sicomm.net'
                           , 'password'     : '1234'
-                          , 'passworddate' : 'apple'                          //#.(bad data) 
+//                        , 'passworddate' : 'apple'                          //#.(bad data) 
 //                        , 'passworddate' :  addDate( 90 )                   //#.(it is set by the create controller) 
 //                        , 'roles'        :['editor']                        // .(11112.01.1 Requires sequelize OneToMany table: user_roles)
                           , 'role'         : 'editor'                         // .(11112.01.2 This doesn't)
@@ -36,8 +36,8 @@
 //                                 sendAPI(  'GET',    `${aHost}${aRoute2}` );                                        process.exit() 
 //          pResult      =   await sndAPI(   'GET',    `${aHost}${aRoute2}` ); console.log( fmtObj( pResult.body ) ); process.exit() 
 
-//                           await sendAPI(  'DELETE', `${aHost}${aRoute2}/147`,    '', onResponse );      return 
-//                           await sendAPI(  'DELETE', `${aHost}${aRoute2}/Robin6`, '', onResponse ); // return 
+//                           await sendAPI(  'DELETE', `${aHost}${aRoute2}/147`,    '', onResponse );    return 
+                             await sendAPI(  'DELETE', `${aHost}${aRoute2}/Robin8`, '', onResponse ); // return 
 
             pResult      =   await sendAPI(  'POST',   `${aHost}${aRoute1}`,     pBody, onResponse )
       try { nID          =         pResult.body.message.match( /User ([0-9]+) reg/ )[1]  } catch(e) { nID = 0 }  

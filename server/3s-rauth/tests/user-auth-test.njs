@@ -10,9 +10,9 @@
        var  aRoute1      =  '/api/rauth/login'                              // .(10909.01.7)
        var  aRoute2      =  '/api/rauth/session'                            // .(10311.07.2).(10406.03.1 RM Was: /api/users/session)// .(10909.01.8)    
 
-//     var  pBody        = { 'username' : 'robin5', 'password' : '1234'  }
-//     var  pBody        = { 'username' : 'robin6', 'password' : '1234'  }
-       var  pBody        = { 'username' : 'suzee',  'password' : '1234'  }
+//     var  pBody        = { 'username' : 'viewer', 'password' : '1234'  }
+       var  pBody        = { 'username' : 'robin8', 'password' : '1234'  }
+//     var  pBody        = { 'username' : 'suzee',  'password' : '1234'  }
                           
 //     var  pBody        = { 'username' : 'robinx', 'password' : ''      }  // Invalid Password
 //     var  pBody        = { 'username' : 'robinx', 'password' : 'sdf'   }  // Invalid user

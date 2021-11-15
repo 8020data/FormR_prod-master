@@ -9,7 +9,7 @@
 
        var  aRoute1      =  '/api/rauth/login'                                           
      
-       var  pBody        ={ 'username'     : 'robin6'
+       var  pBody        ={ 'username'     : 'editor'
                           , 'password'     : '1234'
                              }
 
