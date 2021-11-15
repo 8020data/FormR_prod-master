@@ -73,7 +73,7 @@
 
 // -------------------------------------------------------------------------------------------------
 
-          nDoTests       =  1          // 1. Format pModels
+          nDoTests       =  0          // 1. Format pModels
 //
 //                                                    pDB = Sequelize methods, not controller.menthods 
 //        nDoTests       =  4          // 4. Check if pDB[ 'city'    ].findAll works

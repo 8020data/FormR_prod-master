@@ -9,7 +9,7 @@
 
        var  aRoute1      =  '/api/rauth/login'                                           
      
-       var  pBody        ={ 'username'     : 'robin5'
+       var  pBody        ={ 'username'     : 'editor'
                           , 'password'     : '1234'
                              }
 
@@ -28,7 +28,7 @@
        var  request      =   require( 'request' );
 
        var  pHeaders     ={ 'cache-control': 'no-cache'
-                            'content-type' : 'application/json' }
+                          , 'content-type' : 'application/json' }
 
        var  options      ={ 'method'       :  aMethod
                           , 'url'          :  aHost + aRoute

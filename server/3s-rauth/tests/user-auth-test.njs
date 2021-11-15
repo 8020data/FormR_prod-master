@@ -7,16 +7,18 @@
 
        var  aHost        =  'http://localhost:50253'
 
-       var  aRoute1      =  '/api/rauth/login'                                 // .(10909.01.7)
-       var  aRoute2      =  '/api/rauth/session'                               // .(10311.07.2).(10406.03.1 RM Was: /api/users/session)// .(10909.01.8)    
+       var  aRoute1      =  '/api/rauth/login'                              // .(10909.01.7)
+       var  aRoute2      =  '/api/rauth/session'                            // .(10311.07.2).(10406.03.1 RM Was: /api/users/session)// .(10909.01.8)    
 
-       var  pBody        = { 'username' : 'robin5',  'password' : '1234' }
+//     var  pBody        = { 'username' : 'viewer', 'password' : '1234'  }
+       var  pBody        = { 'username' : 'robin8', 'password' : '1234'  }
+//     var  pBody        = { 'username' : 'suzee',  'password' : '1234'  }
                           
-//     var  pBody        = { 'username' : 'robinx', 'password' : ''         }  // Invalid Password
-//     var  pBody        = { 'username' : 'robinx', 'password' : 'sdf'      }  // Invalid user
-//     var  pBody        = { 'username' : 'robin1',                            // Not an admin or editor, but is a user 
-//     var  pBody        = { 'username' : 'robin1', 'password' : '1234x'    }  // Invalid password 
-//     var  pBody        = { 'username' : 'robin1', 'password' : '1234'     }  // Valid password 
+//     var  pBody        = { 'username' : 'robinx', 'password' : ''      }  // Invalid Password
+//     var  pBody        = { 'username' : 'robinx', 'password' : 'sdf'   }  // Invalid user
+//     var  pBody        = { 'username' : 'robin1',                         // Not an admin or editor, but is a user 
+//     var  pBody        = { 'username' : 'robin1', 'password' : '1234x' }  // Invalid password 
+//     var  pBody        = { 'username' : 'robin1', 'password' : '1234'  }  // Valid password 
 //                        }
 //          -----------  =   -----------------------------------
 
@@ -25,8 +27,8 @@
 // -------  -----------  =   ------------- : -----------------------------------------
 
   function  onLogin( pError, pResponse, pBody ) {
-        if (pError) {        console.log( "\n Error:",         fmtObj( pError ) ); return }
-                             console.log( "\n Login Response", fmtObj( pBody  ) ); 
+        if (pError) {        console.log( "\nError:",          fmtObj( pError ) ); return }
+                             console.log( "\nLogin Response:", fmtObj( pBody  ) ); 
 
 //      if (pBody.message.match( /User Not Found|Invalid Password/i )) { return }
       if (! pBody.accessToken) { return }
@@ -35,8 +37,9 @@
             } // eof onLogin
 //          -----------  =   -----------------------------------
 
-  function  onAuth( pError,  pResponse, pBody ) {
-                             console.log( "\n Session Response", fmtObj( pBody ) ); 
+  function  onAuth( pError,  pResponse, aBody ) {
+        if (pError) {        console.log( "\nError:",          fmtObj( pError ) ); return }
+                             console.log( "\nSession Response:", `\n'${aBody}'` ); 
             }
 //          -----------  =   -----------------------------------
 

@@ -1,12 +1,12 @@
 
 //          FormR    =   require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
        var  FormR    =   require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
-            FormR.init(__dirname, __filename );         //  FormR.help(); process.exit()
+            FormR.init(__dirname, __filename );      //    FormR.help(); process.exit()
 
 //     ------------  =   --------------------------------------------------------
 
        var  aRoute          = '/api/formr/roles'
-       var  aHost           = `http://localhost:50254`
+       var  aHost           = `http://localhost:50253`
 
        var  aArgs           = '?filter={}&range=[0,9]&sort=["id","ASC"]'
 

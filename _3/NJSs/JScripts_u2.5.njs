@@ -94,6 +94,13 @@
 # .(10607.02  6/07/21 RAM  3:00p| Added bQuiet to onSubmitand onSuccess
 # .(10607.03  6/07/21 RAM  3:30p| Changes nDoTests to aDoTests
 # .(10828.01  8/28/21 RAM  6:10p| Added version to Help msg
+# .(11109.05 11/09/21 RAM  2:30p| Added depth to fmtObj)
+# .(11113.03 11/13/21 RAM  5:30p| Added Folder name to trace('module.exports')
+# .(11113.06 11/13/21 RAM  7:30p| Added Nice HTTP Error messages
+# .(11113.08 11/13/21 RAM 10:10p| Set pHeaders if pData has it in sndAPI  
+# .(11113.09 11/13/21 RAM 10:20p| pData is a string.  S.B. aParams 
+# .(11113.10 11/13/21 RAM 10:35p| Change name of subfunc, sndAPI, to setRequest
+# .(11114.02 11/13/21 RAM  9:441| Create tracer rfunction to return result 
 
 ##PRGM     +====================+===============================================+
 ##ID 69.600. Main               |
@@ -104,7 +111,7 @@
 
   function  shoHelp( ) {
        var  aStr = ''
-              + '  JScript Utility Functions u2.51\n'                                                            // .(10828.08.1 RAM)
+              + '  JScript Utility Functions u2.51\n'                                                           // .(10828.08.1 RAM)
               + '  -------------------------------------\n'
               + '    getArg( aKey,  aVal1, aVal2 )\n'
               + '    parse(  aStr1, pRE1,  aStr2 )\n'
@@ -117,9 +124,9 @@
               + '    logIt( aFncLn, aStr, pVar, [nCd] )\n'
               + '    Alert( aStr, aFncLn, pVar,  nCd, bDoit )\n'
               + '    setPage( aDir, aFileName )\n'
-              + '    trace( aMsg, bShow )\n'                                                                      // .(10228.09.1 RAM Added trace doTest)
-              + '    doTest( nTest, __filename ); requires aDoTests\n'                                            // .(10228.09.2)
-              + '    sndAPI( aMethod, aURL, pData, aToken, xNext ); uses bQuiet\n'                                // .(10402.03.31)
+              + '    trace( aMsg, bShow )\n'                                                                    // .(10228.09.1 RAM Added trace doTest)
+              + '    doTest( nTest, __filename ); requires aDoTests\n'                                          // .(10228.09.2)
+              + '    sndAPI( aMethod, aURL, pData, aToken, xNext ); uses bQuiet\n'                              // .(10402.03.31)
 
             say( aStr )
             }
@@ -389,12 +396,18 @@
             }
 //          --------------  =  ----------------------------------------------------
 
-  function  trace( aMsg, bShow, nPad ) {                                                                        // .(10529.04.1 RAM Added Padding Width override)
+//function  trace(  aMsg, bShow, nPad ) { console.log( tracer( aMsg, bShow, nPad ) ) }                          //#.(11114.02.1 RAM Nice try)
+  
+//function  tracer( aMsg, bShow, nPad ) {                                                                       //#.(10529.04.1 RAM Added Padding Width override).(11114.02.2 RAM Create function to return result)
+  function  trace(  aMsg, bShow, nPad ) {                                                                       // .(10529.04.1 RAM Added Padding Width override).(11114.02.2 RAM Create function to return result)
 //      if (Number.isInteger( aMsg )) { [ aMsg, bShow ] = [ bShow || '', aMsg ? aMsg : 0 ] }                    //#.(10303.04.1 RAM if undefined use 1st arg ?? )
         if (Number.isInteger( aMsg )) { var nLv = aMsg; aMsg = bShow || ''; bShow = nLv ? nLv : 0 }             // .(10303.04.1 RAM if undefined use 1st arg ?? )
 //      if (String(aMsg).match( /setProj.*/i )) { TheProject = String(bShow);                     return }      // .(10301.01.2 RAM Set for parsing functino stall stack)
         if (String(aMsg).match( /setProj.*/i )) { TheProject = String(bShow).replace( / /g, '' ); return }      // .(10512.05.2 RAM Clean .ENV var)
         if (String(aMsg).match( /setShow.*/i )) { bQuiet     = String(bShow).match( /false|0/i ) != null; return }    // .(10303.01.1 RAM).(10303.12.1 RAM Gotta use String()).(10315.03.1 RAM Was bShow == false )
+        if (String(aMsg).match( /module.exports/i )) { aFile = bShow ? bShow : ''; bShow = 1                    // .(11113.03.1 RAM)
+            aMsg = `\nmodule.exports${ aFile.substr( 0, aFile.replace( /[\\\/]/g, '/' ).lastIndexOf( '/' ) ).replace( /.+FormR/i, ': FormR' ) }` // .(11113.03.2)   
+            }                                                                                                   // .(11113.03.3)
             bQuiet =  typeof(bQuiet) !=  'undefined' ? bQuiet : false;
             ThePrj =  typeof(ThePrj) !=  'undefined' ? ThePrj : 'FormR'
        if ((bQuiet == true || bShow == 0) && (bShow != -1)) { return }
@@ -423,7 +436,8 @@
 //     var  aTrace = (" ".padEnd( 2 * (mStack.length -  1 ), " ." ) + aName + "[" + aLine + "]  ").padEnd( 60 )
        var  aTrace = (" ".padEnd( 2 * (mStack.length + nLv), " ." ) + aName + "[" + aLine + "]").padEnd( nPad ) // .(10406.07.4 RAM Adjust depth).(10529.04.3)
             aMsg   = ( aMsg ? aMsg : '' ); if (aMsg.match( /^\n/)) { aTrace = `\n${aTrace}`; aMsg = aMsg.replace( /^\n/, '' ) } // .(10305.05.1 RAM If aMsg has a leading \n)
-            console.log( aTrace.replace( /Object\./, '' ) + aMsg )                                              // .(10329.04.1 RAM Remove Object. from function name)
+console.log(aTrace.replace( /Object\./, '' ) + aMsg )                                                           // .(10329.04.1 RAM Remove Object. from function name).(11114.02.3)
+//  return  aTrace.replace( /Object\./, '' ) + aMsg                                                             //#.(10329.04.1 RAM Remove Object. from function name).(11114.02.3)
             }
 //          --------------  =  ----------------------------------------------------
 
@@ -448,29 +462,100 @@
  async function sndAPI_3( aMethod, aURL, pData, aToken, xNext ) {                                               // .(10402.05.1 Beg RAM Can we return real data, i.e. a Promise)
 
        var  xAJAX3   =    require( './request3.njs' )
-       var  pReq     =    sndAPI(       aMethod, aURL, pData, aToken, xNext )
+       var  pReq     =    setRequest( aMethod, aURL, pData, aToken, xNext )                                     // .(11113.10.1 RAM Change name. Was sndAPI)
 
-                          onSubmit(  pReq, xNext )
+                          onSubmit(   pReq, xNext  )
            try {
              var pRes =   await xAJAX3( pReq )
-                          onSuccess( pRes, xNext )
+                          onSuccess(  pRes, xNext )
           return pRes
         } catch( pErr ) {
-                          onFailure( pErr, xNext )
-          return pErr.Error ? pErr: { Error: pErr }                                                           // .(11103.01.1 RAM Return error too)     
+                          onFailure(  pErr, xNext )
+                 pErr =   pErr.message ? { message: pErr.message, stack: "..." } : pErr                         // 
+          return pErr.Error ? pErr : { Error: pErr } 
                           }
             } // eof sndAPI3                                                                                    // .(10402.05.1 End)
 //      -----------  =   ----------------------------
 
   function  sndAPI_2( aMethod, aURL, pData, aToken, xNext ) {
        var  xAJAX2 =  require( './request3.njs' )
-var pReq =  sndAPI(   aMethod, aURL, pData, aToken, xNext )
+       var  pReq   =  setRequest(  aMethod, aURL, pData, aToken, xNext )                                        // .(11113.10.2)   
+        // .(11113.10.1 
             onSubmit( pReq, xNext )
 //          xAJAX2(  pReq ).then( onSuccess ).catch( onFailure )                                                //#.(10402.06.1)
             xAJAX2(  pReq ).then(  pRes => onSuccess( pRes, xNext ) )                                           // .(10402.06.1 RAM Have to pass xNext)
                            .catch( pErr => onFailure( pErr, xNext ) )                                           // .(10402.06.1)
-            }// eof sndAPI_2                                                                                    // .(10402.06.1 RAM Don't include sub functions)
+            } // eof sndAPI_2                                                                                   // .(10402.06.1 RAM Don't include sub functions)
 //      -----------  =   ----------------------------
+
+  function  sndAPI_1( aMethod, aURL, pData, aToken,   xNext ) {
+       var  xAJAX1 =  require( 'request' ), pRequest
+       var  pReq   =  setRequesat(  aMethod, aURL, pData, aToken, xNext )                                       // .(11113.10.3)   
+            onSubmit( pReq, xNext )
+            xAJAX1(   pReq, onComplete )
+
+//      -----------  =   ----------------------------
+
+  function  onComplete( pError, pResponse, pBody ) {
+        if (typeof(xNext) != 'function') {
+        if (pError) { onFailure( pError )
+        } else      { onSuccess( pResponse.body, pResponse ) }
+        } else xNext( pError, pBody, '' )
+            }  // onComplete
+//      -----------  =   ----------------------------
+
+            } // eof sndAPI_1
+// ----- ----------  =    ---------------------------------------------------------
+
+//      -----------  =   ----------------------------
+
+  function  setRequest( aMethod, aURL, pData, aToken, xNext ) {                         // .(11113.10.4 RAM was sndAPI)   
+
+//     var  pHeaders = {   'cache-control'    : 'no-cache' }                            //#.(11113.08.1)
+       var  pHeaders = { }                                                              // .(11113.08.1)
+
+        if (pData && pData.headers) {                                                   // .(11113.08.2 Beg RAM Never thought that Headers would be passed with pData) 
+            pHeaders =      pData.headers
+            delete pData.headers 
+            }   
+        if (pData && pData.body) {                                                      // .(11113.08.9 Beg RAM This mess assumes that pData is pData.body) 
+            pData    =      pData.body
+            }                                                                           // .(11113.08.9 End) 
+
+            pHeaders[      'cache-control'  ]  = 'no-cache'                             // .(11113.08.2 End).(11113.08.3 RAM Override it?)
+        if (aToken) {
+            pHeaders[      'x-access-token' ]  = aToken                                 // .(11113.08.4 RAM Override it?)
+            }
+
+        if (aMethod.match( /GET|DELETE/i  ) ) {
+            aParams  =     (typeof(pData) == 'string') ? pData : ''                     // .(11113.09.1)
+            aURL     =   `${aURL}${ aParams ? '/' + aParams : '' }`                     // .(11113.09.2 RAM Was pData)
+       var  bJSON    =      false
+            pData    =     ''                  // aData                                 //#.(10402.04.1 Change to aData)
+            }
+
+        if (aMethod.match( /POST|PUT/i ) ) {
+//     var  aData    =      JSON.stringify( pData )                                     //#.(10402.04.2 RAM Assuming pData is always in JSON format)
+            pHeaders[      'content-type' ]    = 'application/json'                     // .(11113.08.5 RAM Override what was passed with pData?)
+//          pHeaders[      'content-length' ]  =  aData.length                          //#.(10402.04.3 RAM Gotta send length)
+       var  bJSON    =      true
+            }
+
+        if (aMethod.match( /PUT/i ) && pData && pData.id ) {
+            aURL     =   `${aURL}${ pData.id }`
+            delete          pData.id
+            }
+       var  pRequest =
+             {  method          :  aMethod
+             ,  url             :  aURL
+             ,  headers         :  pHeaders
+             ,  data            :  pData     //   aData                                 //#.(10402.04.4 Change to aData)
+//           ,  json            :  bJSON     // ? pData : ''                            //#.(10402.04.5)
+                }
+    return  pRequest
+//          -------  =   ---------------------
+         } // eof sndAPI
+//       ----------  =   ----------------------------
 
  function  onSuccess( pResponse, xNext ) {                                                                      // .(10402.06.2 RAM Added xNext)
         if (bQuiet =  typeof(bQuiet) !=  'undefined' ? bQuiet : false) { return };                              // .(10607.02.1 RAM)
@@ -496,33 +581,39 @@ var pReq =  sndAPI(   aMethod, aURL, pData, aToken, xNext )
 //      -----------  =   ----------------------------
 
   function  onFailure(  pError, xNext ) {                                                                       // .(10402.06.3 Added xNext)
+       if ((bQuiet =  typeof(bQuiet) !=  'undefined' ? bQuiet : false) == 2 ){ return };                        // .(11113.03.1 RAM )
         if (typeof(xNext) != 'function') {
 //          throw new Error( pError );
-            console.log( "Response.error:" + fmtObj( pError, 6 ) );
+
+       var  aErrMsg = pError.message 
+        if (aErrMsg) {                                                                         // .(11113.06.1 RAM Add Nice Error Messages)
+            aErrMsg = aErrMsg.match( /400/) ? "HTTP Error: 400 Bad Request from client"  : aErrMsg
+            aErrMsg = aErrMsg.match( /403/) ? "HTTP Error: 403 Forbidden by server"      : aErrMsg
+            aErrMsg = aErrMsg.match( /404/) ? "HTTP Error: 404 Page not found on server" : aErrMsg
+            aErrMsg = aErrMsg.match( /405/) ? "HTTP Error: 405 Method not allowed"       : aErrMsg
+            aErrMsg = aErrMsg.match( /408/) ? "HTTP Error: 408 Request Timeout"          : aErrMsg
+            aErrMsg = aErrMsg.match( /404/) ? "HTTP Error: 404 Page not found"           : aErrMsg
+
+            aErrMsg = aErrMsg.match( /500/) ? "HTTP Error: 500 Internal Server Error"    : aErrMsg
+            aErrMsg = aErrMsg.match( /501/) ? "HTTP Error: 501 Not Implemented"          : aErrMsg
+            aErrMsg = aErrMsg.match( /502/) ? "HTTP Error: 502 Bad Gateway, i.e. invalid response from the upstream server"    : aErrMsg
+            aErrMsg = aErrMsg.match( /503/) ? "HTTP Error: 503 Service Unavailable"      : aErrMsg
+            aErrMsg = aErrMsg.match( /504/) ? "HTTP Error: 504 Gateway Timeout"          : aErrMsg
+            aErrMsg = `\n${ aErrMsg.padStart(  aErrMsg.length +  6 ) }`                                            
+//          pError  = { message: aErrMsg, stack: pError.stack }, 6 )                                              //#.(11113.06.2 RAM Full object can't be redifined here)  
+//          pError  = { message: aErrMsg, stack: "..." }
+        } else { 
+//          aErrMsg = fmtObj( { message: pError.message, stack: pError.stack }, 6 )                               //#.(11113.06.3 RAM Would never get here)    
+            aErrMsg = fmtObj( pError, 6 )                                                                         // .(11113.06.3 RAM Yuk. pError.message isn't in formatted result)    
+            }                                                                       
+//          console.log( "Response.error:" + fmtObj( pError ) );                                                  //#.(11113.06.1 
+            console.log( "Response.error:" + aErrMsg );                                                           // .(11113.06.1 End)
+
         } else {
             xNext( pError, '', '' ) }
             } // eof onFailure
 //      -----------  =   ----------------------------
 //          } // eof sndAPI_2                                                                                   //#.(10402.06.1)
-// ----- ----------  =    ---------------------------------------------------------
-
-  function  sndAPI_1( aMethod, aURL, pData, aToken,   xNext ) {
-       var  xAJAX1 =  require( 'request' ), pRequest
-       var  pReq   =  sndAPI(  aMethod, aURL, pData, aToken, xNext )
-            onSubmit( pReq, xNext )
-            xAJAX1(   pReq, onComplete )
-
-//      -----------  =   ----------------------------
-
-  function  onComplete( pError, pResponse, pBody ) {
-        if (typeof(xNext) != 'function') {
-        if (pError) { onFailure( pError )
-        } else      { onSuccess( pResponse.body, pResponse ) }
-        } else xNext( pError, pBody, '' )
-            }  // onComplete
-//      -----------  =   ----------------------------
-
-            } // eof sndAPI_1
 // ----- ----------  =    ---------------------------------------------------------
 
   function  onSubmit( pReq, xNext ) {
@@ -544,41 +635,6 @@ var pReq =  sndAPI(   aMethod, aURL, pData, aToken, xNext )
             xNext( pReq.headers, pReq.data, `${ pReq.method} ${pReq.url}` )
             }
         }
-//      -----------  =   ----------------------------
-
-  function  sndAPI( aMethod, aURL, pData, aToken, xNext ) {
-
-       var  pHeaders = {   'cache-control'    : 'no-cache' }
-
-        if (aToken) {
-            pHeaders[      'x-access-token' ] = aToken
-            }
-        if (aMethod.match( /GET|DELETE/i  ) ) {
-            aURL     =   `${aURL}${ pData ? '/' + pData : '' }`
-       var  bJSON    =      false
-            pData    =     ''                  // aData                                 //#.10402.04.1 Change to aData)
-            }
-        if (aMethod.match( /POST|PUT/i ) ) {
-//     var  aData    =      JSON.stringify( pData )                                     //#.(10402.04.2 RAM Assuming pData is always in JSON format)
-            pHeaders[      'content-type' ]    = 'application/json'
-//          pHeaders[      'content-length' ]  =  aData.length                          //#.(10402.04.3 RAM Gotta send length)
-       var  bJSON    =      true
-            }
-        if (aMethod.match( /PUT/i ) && pData && pData.id ) {
-            aURL     =   `${aURL}${ pData.id }`
-            delete          pData.id
-            }
-       var  pRequest =
-             {  method          :  aMethod
-             ,  url             :  aURL
-             ,  headers         :  pHeaders
-             ,  data            :  pData     //   aData                                 //#.(10402.04.4 Change to aData)
-//           ,  json            :  bJSON     // ? pData : ''                            //#.(10402.04.5)
-                }
-    return  pRequest
-//          -------  =   ---------------------
-         } // eof sndAPI
-//       ----------  =   ----------------------------
 //--------  --------------  =  ------------------------------------------------------------------------------------
 
       ; ( ( aFns ) => {

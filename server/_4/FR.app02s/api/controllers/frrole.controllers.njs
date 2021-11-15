@@ -1,9 +1,9 @@
-//FileName: ./ServerN/appNs/api/controllers/frrole.controllers 
+//FileName: ./ServerN/appNs/api/controllers/frrole.controllers
 // --------------------------------------------------------------------------------------------------------
 
 //          FormR           =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
         var FormR           =  require( __dirname.replace( /[\\\/](_3|serv|clie).+/, '') + '/_3/FR.FNSs/FormR_Lib.js' )   // .(10829.03.1)
-            FormR.init(      __dirname, __filename );       //  FormR.help(); process.exit()                                    
+            FormR.init(      __dirname, __filename );       //  FormR.help(); process.exit()
 
 //      --------------------------------------------------------------------------------------------------
 
@@ -14,7 +14,7 @@
 //      --------------------------------------------------------------------------------------------------
 
         var aFName          =  `${aModel}.controllers`
- 
+
         var pConfig         ={ ControllersFilename: __filename }                                            // .(10301.03.1 RAM Let's try saving the file name)
 //          pConfig.Cmd     = 'replace default controllers'                                                 //#.(10301.03.2 RAM Replace the default Controller Routes).(10918.02.7)
 //          pConfig.Cmd     = `replace default controllers, then use ${aModel} controllers`                 // .(10918.02.7 RAM if not set here, see .env, otherwise it defaults to 'use')
@@ -32,7 +32,7 @@
 //      --------------------------------------------------------------------------------------------------
 
         var pRoutes  =  //  {  aRoute                            : [ aRoles,    aController ] = mControllerRoles }
-               { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
+               { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row)
 //                -----------  --------------------------------       -------    --------------------
 //             , 'http.get     /api/${aTable}/                 ' : [ '      I', 'findAll             ' ]    // .(10314.08.1 RAM Add Controllera for React-Admin)
 //             , 'http.get     /api/${aTable}/model/           ' : [ 'A - - -', 'getModel            ' ]    //   Retrieve schema model    .(10905.08.5 RAM Use default model controller)
@@ -42,11 +42,11 @@
 //             , 'http.put     /api/${aTable}/:id              ' : [ '      I', 'updateOne           ' ]    // .(10314.08.5)
 //             , 'http.delete  /api/${aTable}/:id              ' : [ '      I', 'deleteOne           ' ]    // .(10314.08.7)
                   }
-            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
+            delete pRoutes[ 'Method        Route (Order is important!)    ' ]                               // .(11109.01.2 RAM Delete the 1st row)
 
 // ---------------------------------------------------------------------------------------------------------
 
-        var pControllers    = { 
+        var pControllers    = {
 
 //          controller1       : { }                                                                         //#.(10328.02.3 RAM Added Table and Model. Cute).(10917.06.1)
             _frroleController : { Table: aDefault, Model: aModel }                                          // .(10917.06.1 RAM Identify yourself)
@@ -79,6 +79,6 @@
          ,  Options         :  pConfig                                   // .(10301.03.3)
             }
 
-        trace(  "\nmodule.exports" )
+        trace( 'module.exports', __filename )                            // .(11113.03.6)
 
 // =================================================================================================================

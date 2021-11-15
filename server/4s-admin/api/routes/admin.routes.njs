@@ -11,13 +11,13 @@
 
 // --------------------------------------------------------------
 
-                                   trace(  "module.exports" )
+                                   trace(   'module.exports', __filename )                   // .(11113.03.4 RAM Added __filename)    
 
      module.exports             =  getAuthRoutes()                                           // .(10313.01.1)
 
 // --------------------------------------------------------------
 
-   function getAuthRoutes(  ) { trace( )                                                     // .(10313.01.2 Beg RAM Return pRouter for pApp.use( pRouter ))
+   function getAuthRoutes(  ) {    trace( )                                                  // .(10313.01.2 Beg RAM Return pRouter for pApp.use( pRouter ))
 
    const    setHeader = function( req, res, next ) {                                         // .(10227.05.2 Beg RAM Moved to be a function)
             res.header(
@@ -27,19 +27,19 @@
             next();  // [authJwt.verifyToken]
             };                                                                               // .(10227.05.2 End)
 
-        var pRouter          =  require( 'express').Router()                                 // .(10313.01.3)
+        var pRouter             =  require( 'express').Router()                              // .(10313.01.3)
 
-            pRouter.use(        setHeader )
+            pRouter.use(           setHeader )
 
 //          --------------------------------------------------------------------------------
                                                                                              // .(10917.01.1 Beg RAM Move to admin.routes.njs)
-   const    pUserControllers =  require( '../controllers/fruser.controllers.njs' );          // .(10319.05.2).(10328.06.2).(10331.03.2 RAM Changed file name)
-   const    pRoleControllers =  require( '../controllers/frrole.controllers.njs' );          // .(10319.05.3).(10328.06.3).(10331.03.3).(10917.04.1 RAM Not used in app3s)
+   const    pUserControllers    =  require( '../controllers/fruser.controllers.njs' );       // .(10319.05.2).(10328.06.2).(10331.03.2 RAM Changed file name)
+   const    pRoleControllers    =  require( '../controllers/frrole.controllers.njs' );       // .(10319.05.3).(10328.06.3).(10331.03.3).(10917.04.1 RAM Not used in app3s)
 
-            pTableRoutes     =  getControllers( pUserControllers, aShowEm )                  // .(10319.05.4).(10921.05.1 RAM Added aShowEm)
-            pTableRoutes     =  getControllers( pRoleControllers, aShowEm )                  // .(10319.05.6).(10917.04.1).(10921.05.2)
+            pTableRoutes        =  getControllers( pUserControllers, aShowEm )               // .(10319.05.4).(10921.05.1 RAM Added aShowEm)
+            pTableRoutes        =  getControllers( pRoleControllers, aShowEm )               // .(10319.05.6).(10917.04.1).(10921.05.2)
 
-            pRouter.use(        getAppRoutes( pTableRoutes ) )                               // .(10319.05.7)
+            pRouter.use(           getAppRoutes(   pTableRoutes ) )                          // .(10319.05.7)
 
 //          --------------------------------------------------------------------------------
                                                                                              // .(10917.01.1 End)

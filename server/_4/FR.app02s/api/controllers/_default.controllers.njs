@@ -1,4 +1,4 @@
-//FileName: ./ServerN/appNs/api/controllers/_default.controllers                                          // .(10331.05.1 RAM Won't ever be used, but must be present)
+//FileName: ./ServerN/_4/FR.app02s/api/controllers/_default.controllers                                          // .(10331.05.1 RAM Won't ever be used, but must be present)
 // --------------------------------------------------------------------------------------------------------
 
 //          FormR           =  require( `${process.env.FORMR_HOME}/_3/FR.FNSs/FormR.fns.njs` )                            //#.(10418.02.1).(10829.03.1)
@@ -17,7 +17,7 @@
 
 //      --------------------------------------------------------------------------------------------------
 
-        var pRoutes  =  //   { aRoute                            : [ aRoles,    aController ] = mControllerRoles }
+        var pRoutes  =  //  {  aRoute                            : [ aRoles,    aController ] = mControllerRoles }
                { 'Method        Route (Order is important!)    ' : [ 'Roles ',  'Controller          ' ]    // .(11109.01.1 RAM Add 1st row to all commas on each subsequent row) 
 //                -----------  --------------------------------       -------    --------------------
                , 'http.post    /api/${aTable}/                 ' : [ 'A O - -', 'createOne           ' ]    // Create a new table record               
@@ -32,7 +32,7 @@
                , 'http.put     /api/${aTable}/:id              ' : [ 'A O U -', 'updateOne           ' ]    // Update a table record with id
                , 'http.delete  /api/${aTable}/:id              ' : [ 'A O U -', 'deleteOne           ' ]    // Delete all table records
                   }
-            delete pRoutes[ 'Method        Route                          ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
+            delete pRoutes[ 'Method        Route (Order is important!)    ' ]                               // .(11109.01.2 RAM Delete the 1st row) 
 
 // ---------------------------------------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@
 //    GetModel Controller
 //    -----------------------------------------------------------------------------------------
 
-          , getModel        :  function getModel( req, res ) { trace( `${aModel}.model` )                   // .(10905.08.2 RAM Add getModel to _default.controllers.njs file)
+          , getModel        :  function getModel( req, res ) { trace( `\n${aModel}.model` )                   // .(10905.08.2 RAM Add getModel to _default.controllers.njs file)
 
 //      var aModel_JSON     =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.2 RAM Use frrole to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
         var aModel_JSON     =  JSON.stringify( pModel.RSchema )                                             // .(10903.01.1 RAM Get a Live version)
@@ -68,7 +68,7 @@
                                res.json( JSON.parse( aModel_JSON ) )                                        // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
         } else {                                                                                            // .(10918.05.2 Beg) 
 //                             sndError( pErr, `Error occurred while getting model for table ${aModel}.`, res ) 
-                               res.send( `There is no pModel.RSchema defined for this model, '${aModel}''`) // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
+                               res.send( `    There is no pModel.RSchema defined for this model, '${aModel}''`) // .(10414.04.4 RAM Gotcha: var aModel = `{aModel} is undefined).(10903.01.2)
             }                                                                                               // .(10918.05.2 End) 
             } // eof `${aFName}.getModel`
 //          ----------------------------------------------------------------------------------
@@ -76,10 +76,10 @@
 //    CreateOne (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , createOne       :  function createOne( req, res ) { trace( `${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
+          , createOne       :  function createOne( req, res ) { trace( `\n${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
 
               if (!req.body[   aColToSearch ] ) {                                                           // Validate request .(10418.03.2 RAM Was: aPrimaryCol)
-                                             sndError( '',   `Search column ${aColToSearch} can not be empty for table ${aModel}.!`, res )  // .(11109.03.1 RAM Was: aCol2Search)
+                                             sndError( '', `    Search column ${aColToSearch} can not be empty for table ${aModel}.!`, res )  // .(11109.03.1 RAM Was: aCol2Search)
                    return;
                    }
 
@@ -96,14 +96,14 @@
                          .then(   pResult => {                                                              // .(11018.01.3 RAM Changed name of var: pBody to pResult)
                                              res.send( pResult ); } )
                          .catch(  pErr  => {
-                                             sndError( pErr, `Error occurred while creating a record for table ${aModel}.`, res ) } )
+                                             sndError( pErr, `    Error occurred while creating a record for table ${aModel}.`, res ) } )
             } // eof `${aFName}.createOne`
 //          ----------------------------------------------------------------------------------
 
 //    FindOne (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , findOne         :  function findOne(     req, res ) { trace( `${aModel}.findOne`)               // .(10918.03.1 RAM Was getOne)
+          , findOne         :  function findOne(     req, res ) { trace( `\n${aModel}.findOne`)               // .(10918.03.1 RAM Was getOne)
 
                var id       =  req.params.id;                                                               // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
 //             var id       =  req.params[ 'id' ];                                                          //#.(10331.02.1 RAM Express or Sequelize's id from route /:id)
@@ -115,14 +115,14 @@
                                                        pRow.id =  id                                        // .(10906.05.2 Required by React-Admiin, even though pRow.ID exists)
                                              res.send( pRow ); } )                                          // .(10906.05.3 RAM Was: pData)
                          .catch(  pErr  => {
-                                             sndError( pErr, `Error retrieving id = '${id}' for table ${aModel}.`, res ) } )
+                                             sndError( pErr, `    Error retrieving id = '${id}' for table ${aModel}.`, res ) } )
             } // eof `${aFName}.getOne`
 //          ----------------------------------------------------------------------------------
 
 //    FindAll (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , findAll         :  function findAll(     req, res ) { trace( `${aModel}.findAll`)
+          , findAll         :  function findAll(     req, res ) { trace( `\n${aModel}.findAll`)
 
               var  pArgs    =  getArgs( req, pModel )                                                                 // .(11019.01.1 RAM Move code to this function)           
 
@@ -182,7 +182,7 @@
 //    UpdateOne (ie PUT) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , updateOne       :  function updateOne(   req, res ) { trace( `${aModel}.updateOne`)
+          , updateOne       :  function updateOne(   req, res ) { trace( `\n${aModel}.updateOne`)
 /*
 //           const id       =  req.params[ 'id' ];
 //           const pBody    =  req.body
@@ -213,16 +213,16 @@
                      .then(    ( )   =>  { return pModel.findByPk( id ) } )
                      .then(    pData =>  {                                                                          // .(10906.05.4 RAM pData is pRow returned by pModel.findByPk, not pData returned by Sequelize) 
                            if (pData)    { res.send( pData.toJSON() );  }
-                             else {        sndError( '',   `Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.` ); } } )
+                             else {        sndError( '',   `    Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.` ); } } )
                      .catch(   pErr  =>  {
-                                           sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
+                                           sndError( pErr, `    Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
             } // eof `${aFName}.updateOne`
 //          ----------------------------------------------------------------------------------
 
 //    UpdateOne2 (ie PUT) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , updateOne2      :  function updateOne( req, res ) { trace( ` ${req.params.id}` )                    // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
+          , updateOne2      :  function updateOne( req, res ) { trace( `\n${req.params.id}` )                    // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
 
         var id             =   req.params.id;
         if (req.body.id) {     delete req.body.id }                                                             // .(10315.13.1 RAM id can't be part of body)
@@ -232,26 +232,40 @@
      .then( pData => {
                                res.send( pData.toJSON() );   } )                                                // .(10315.14.1 RAM Added .toJSON())
     .catch( pErr  => {
-                               res.status( 500 ).send( { message: `Error updating id: ${id}.\n ${pErr}` } ); } );
+                               res.status( 500 ).send( { message: `    Error updating id: ${id}.\n ${pErr}` } ); } );
             } // eof updateOne
 //          ------------------------------------------------------------------
 
 //    Delete Controller
 //    -----------------------------------------------------------------------------------------
 
-          , deleteOne       :  function deleteOne(    req, res ) { trace( `${aModel}.deleteOne`)
+          , deleteOne       :  function deleteOne(    req, res ) { trace( `\n${aModel}.deleteOne`)
+
+               var pWhere   =  { }
+
+               var aSrchVal =  req.query[ aColToSearch || null ];                                                 // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
+               if (aSrchVal) {                                                                                      // .(10418.03.5)
+                   pWhere[ aColToSearch ] = aSrchVal; aSearch=`${aColToSearch}='${aSrchVal}''`                            // .(10418.03.6)
+
+               } else {
 
                var id       =  req.params.id;
-               var pWhere   =   {  }; pWhere[ aPrimaryCol ] = id                                                      // .(10418.08.3 RAM Will this work?)
+               if (id.match( /^[0-9]+$/ )) {
+                   pWhere[ aPrimaryCol  ] = id;       aSearch=`${aPrimaryCol}=${id}`                                    // .(10418.08.3 RAM Will this work?)
+          } else { pWhere[ aColToSearch ] = id;       aSearch=`${aColToSearch}='${id}'`                                  // .(10418.08.3 RAM Will this work?)
+               }   }   
 
-                   pModel.destroy( {  where:  pWhere } )                                                              // .(10418.08.4 RAM Instead of this: { id: id } )
+                   pModel.destroy( { where:  pWhere } )                                                                // .(10418.08.4 RAM Instead of this: { id: id } )
 
                          .then(   nNum  => { if (nNum == 1) {
-                                             res.send( { message: `Record was deleted successfully from table ${aModel}!`,  id: id } );  // .(11109.06.1 RAM Added id)
+                                             res.send( { message: `    Record for ${aSearch} was deleted successfully from table ${aModel}!`,  id: id } );                 // .(11109.06.1 RAM Added id).(11113.10.1 RAM Added it to message)
+//                                           sndRespm( { message: `    Record for ${aSearch} was deleted successfully from table ${aModel}!`,  id: id }, res, tracer() );  // .(11114.03.1 RAM More debugginh info)
+                                                           trace( `    Record for ${aSearch} was deleted successfully from table ${aModel}!`   );                          // .(11114.03.1 RAM More debugginh info)
                                          } else {
-                                             res.send( { message: `Cannot delete record with id=${id} for table ${aModel}.` } ); } } )
+                                             res.send( { message: `    Cannot delete record for ${aSearch} from table ${aModel}.`  } ); 
+                                                           trace( `    Cannot delete record for ${aSearch} from table ${aModel}!`    ); } } )                              // .(11114.03.1 RAM More debugginh info)
                          .catch(  pErr  => {
-                                            sndError( pErr, `Error deleting record with id=${id} for table ${aModel}.`     , res ) } );  // .(10828.03.1)
+                                             sndError(   pErr,    `    Error deleting record for ${aSearch} from table ${aModel}.`, res ) } );  // .(10828.03.1)
             } // eof `${aFName}.deleteOne`
 //          ----------------------------------------------------------------------------------
 /*
@@ -270,7 +284,7 @@
 
           , deleteAll       :  function deleteAll(    req, res ) { trace( `${aModel}.deleteAll`)
 
-                                             res.send( { message: `Alll records for table ${aModel} would be deleted successfully!` });
+                                             res.send( { message: `All records for table ${aModel} would be deleted successfully!` });
                                          process.exit()
 
                    pModel.destroy( { where: { }, truncate: false } )
@@ -387,10 +401,18 @@
             }                                                                                               // .(11020.01.1 RAM Added)          
 //          ------------------------------------------------------------------
 
+  function  sndRespm( pMsg, res, aTrace ) {                                                                 // .(11114.03.2 RAM Added function)
+//          res.status( 200 ).send( pMsg ); 
+            console.log( aTrace )
+            res.send( pMsg ); 
+            }
+//          ------------------------------------------------------------------
+
   function  sndError( pErr, aMsg, res ) {                                                                   // .(10418.06.2 RAM Beg Turn itinto a function)
        var  pMsg = { message: aMsg };  
-        if (pErr)  { if (pErr.stack) {delete pErr.stack }                                                 // .(11109.08.1 RAM Delete pErr.stack)
-                   pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
+        if (pErr)  { 
+        if (pErr.stack) {delete pErr.stack }                                                                // .(11109.08.1 RAM Delete pErr.stack)
+            pMsg.error = fmtObj( pErr ).replace( /[\n]/g, '\n  ---' ) }
 //          console.log( fmtObj( pMsg ) ); res.status( 500 ).send( pMsg );                                  // .(10418.06.1 RAM I didn't get the message)
             console.log( fmtObj( pMsg ) ); res.status( 200 ).send( pMsg );                                  // .(11109.09.1 RAM Status 500 is a hard error, let's send JSON with error)
             }                                                                                               // .(10418.06.2 End)
@@ -408,7 +430,7 @@
             }
 //      --------------------------------------------------------------------------------------------------
 
-        trace(  "\nmodule.exports" )
+        trace( 'module.exports', __filename )                                                               // .(11113.03.6)
 
 // =================================================================================================================
 

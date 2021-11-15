@@ -33,7 +33,7 @@
 
             pApp.use(      sndError_InvalidRoute  )                                     // .(10124.01.4 RAM Finally, send error if all routes fail)
 
-            bDoSeqSync         = `${ process.env.DO_SYNC }`.match( /true|1/i ) != null            // .(10327.02.1 RAM Put option into .env)
+            bDoSeqSync  = `${ process.env.DO_SYNC }`.match( /true|1/i ) != null         // .(10327.02.1 RAM Put option into .env)
         if (bDoSeqSync) {  require( './api/models/index.js' ).sequelize.sync(); }       // .(10327.02.2 RAM Initializes tables and test data if necessary))
 
                            shoRoutes( pApp, process.env.SHOW_ROUTES )

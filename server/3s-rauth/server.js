@@ -54,7 +54,7 @@
             } // eof showServer_Start
 //          ----------------------------------------------
 
-  function  sndRoot_Welcome( req, res, next ) { trace()                                // .(10218.05.1 RAM Simplest route )
+  function  sndRoot_Welcome( req, res, next ) { trace()                                 // .(10218.05.1 RAM Simplest route )
        var  aURL     =  req.originalUrl || ''
         if (aURL == '/') {
             res.send(  `  Welcome to the /${process.env.APP_NAME} application.` )       // .(10218.05.2 RAM It was silent with response below)
@@ -62,7 +62,7 @@
             } // eof sendRoot_Welcome
 //          ----------------------------------------------
 
-  function  sndError_InvalidRoute( req, res ) {                                        // .(10124.01.5 RAM Beg: Write sendError_InvalidRoute)
+  function  sndError_InvalidRoute( req, res ) {                                         // .(10124.01.5 RAM Beg: Write sendError_InvalidRoute)
        var  aURL     =  req.originalUrl || ''
        var  aMethod  =  req.method;       trace( `${aMethod} ${aURL}` )                 // .(10227.09.4 RAM)
        var  aMsg     = `Invalid route: ${aMethod} ${aURL}`;
