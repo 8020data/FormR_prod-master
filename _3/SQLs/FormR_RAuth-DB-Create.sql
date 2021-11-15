@@ -60,9 +60,9 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 
 INSERT INTO `users`
-   VALUES (1, 'admin',  'admin@auth.com', '$2a$08$1s2JA/PRafGhln4pPnmpfeP4wBamZrBZsiFH3CsDFP.0nifzh/KiO','yes',NULL,'admin', '2021-07-18','2021-04-19 14:32:16','2021-04-19 14:32:16')
-        , (2, 'editor', 'editor@auth.com','$2a$08$1s2JA/PRafGhln4pPnmpfeP4wBamZrBZsiFH3CsDFP.0nifzh/KiO','yes',NULL,'editor','2021-07-18','2021-04-19 14:33:33','2021-09-03 18:05:21')
-        , (3, 'viewer', 'viewer@auth.com','$2a$08$1s2JA/PRafGhln4pPnmpfeP4wBamZrBZsiFH3CsDFP.0nifzh/KiO','yes',NULL,'viewer','2021-07-18','2021-09-02 14:43:29','2021-09-02 14:43:29');
+   VALUES (1, 'admin',  'admin@auth.com', '$2a$08$5QEFKrNb/Sj/8J2BJtRLKe/e8Qngo7hTr5XiluJ.ArGdGcaeGVvKW','yes',NULL,'admin', '2021-07-18','2021-04-19 14:32:16','2021-04-19 14:32:16')
+        , (2, 'editor', 'editor@auth.com','$2a$08$5QEFKrNb/Sj/8J2BJtRLKe/e8Qngo7hTr5XiluJ.ArGdGcaeGVvKW','yes',NULL,'editor','2021-07-18','2021-04-19 14:33:33','2021-09-03 18:05:21')
+        , (3, 'viewer', 'viewer@auth.com','$2a$08$5QEFKrNb/Sj/8J2BJtRLKe/e8Qngo7hTr5XiluJ.ArGdGcaeGVvKW','yes',NULL,'viewer','2021-07-18','2021-09-02 14:43:29','2021-09-02 14:43:29');
 
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
