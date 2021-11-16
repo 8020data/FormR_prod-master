@@ -60,7 +60,7 @@
 //    GetModel Controller
 //    -----------------------------------------------------------------------------------------
 
-          , getModel        :  function getModel( req, res ) { trace( `\n${aModel}.model` )                   // .(10905.08.2 RAM Add getModel to _default.controllers.njs file)
+          , getModel        :  function getModel( req, res ) { trace( `\nGetting ${aModel}` )               // .(10905.08.2 RAM Add getModel to _default.controllers.njs file)
 
 //      var aModel_JSON     =  require( 'fs' ).readFileSync( `${APP_HOME}/api/models/${aModel}.model.json`, 'ASCII' ) //#.(10414.04.2 RAM Use frrole to be conistent. Or it could be ${aModel} as it was).(10903.01.1)
         var aModel_JSON     =  JSON.stringify( pModel.RSchema )                                             // .(10903.01.1 RAM Get a Live version)
@@ -76,7 +76,7 @@
 //    CreateOne (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , createOne       :  function createOne( req, res ) { trace( `\n${aModel}.createOne ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
+          , createOne       :  function createOne( req, res ) { trace( `\nCreating One ${req.body[ aColToSearch ]}` )  // .(10315.12.1 Beg RAM Added)
 
               if (!req.body[   aColToSearch ] ) {                                                           // Validate request .(10418.03.2 RAM Was: aPrimaryCol)
                                              sndError( '', `    Search column ${aColToSearch} can not be empty for table ${aModel}.!`, res )  // .(11109.03.1 RAM Was: aCol2Search)
@@ -103,7 +103,7 @@
 //    FindOne (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , findOne         :  function findOne(     req, res ) { trace( `\n${aModel}.findOne`)               // .(10918.03.1 RAM Was getOne)
+          , findOne         :  function findOne(     req, res ) { trace( `\nGetting One ${aModel}`)         // .(10918.03.1 RAM Was getOne)
 
                var id       =  req.params.id;                                                               // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
 //             var id       =  req.params[ 'id' ];                                                          //#.(10331.02.1 RAM Express or Sequelize's id from route /:id)
@@ -122,7 +122,7 @@
 //    FindAll (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , findAll         :  function findAll(     req, res ) { trace( `\n${aModel}.findAll`)
+          , findAll         :  function findAll(     req, res ) { trace( `\nSearching ${aModel}`)
 
               var  pArgs    =  getArgs( req, pModel )                                                                 // .(11019.01.1 RAM Move code to this function)           
 
@@ -164,7 +164,7 @@
 //    FindMany (ie GET) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , findMany        :  function findMany(    req, res ) { trace( `${aModel}.findMany`)
+          , findMany        :  function findMany(    req, res ) { trace( `\nSearching ${aModel}`)
 
               pControllers_.findAll( req, res )                                                                       // .(11103.02.1 RAM Was: pController.findAll)
 
@@ -182,7 +182,7 @@
 //    UpdateOne (ie PUT) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , updateOne       :  function updateOne(   req, res ) { trace( `\n${aModel}.updateOne`)
+          , updateOne       :  function updateOne(   req, res ) { trace( `\nUpdating ${aModel} `)
 /*
 //           const id       =  req.params[ 'id' ];
 //           const pBody    =  req.body
@@ -196,24 +196,45 @@
 //
 //
 //                       .catch( pErr  => {
-//                                          sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
+//                                       sndError( pErr, `Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
 */
-           var id           =  req.params.id;                                                                       // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
-//         var id           =  req.params[ aPrimaryCol.toLowerCase() ];                                             // .(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
-           if (req.body.id) {  delete req.body.id }                                                                 // .(10315.13.1 RAM id can't be part of body)
+        var id              =  req.params.id;                                                                         // .(10331.02.1 RAM Express or Sequelize's id from route /:id).(10906.06.1 RAM Does it always exist)
+//      var id              =  req.params[ aPrimaryCol.toLowerCase() ];                                               // .(10906.06.1 RAM <html> form vars are always lowercase per React-Admin?)
+        if (req.body.id) {     delete req.body.id }                                                                   // .(10315.13.1 RAM id can't be part of bo
 
-           var pBody        =  req.body
-           var pWhere       = { }; pWhere[ aPrimaryCol ] = id                                                       // .(10418.08.1 RAM Will this work using Sequelize's PrimaryCol )
-//         var pWhere       = { }; pWhere[ id ] = id                                                                //#.(11109.05.1 RAM Will this work?? )
+        var pBody           =  req.body
+        var pWhere          = { }; pWhere[ aPrimaryCol ] = id                                                         // .(10418.08.1 RAM Will this work using Sequelize's PrimaryCol )
+//      var pWhere          = { }; pWhered ] = id                                                                     //#.(11109.05.1 RAM Will this work?? )
 
-           if (pBody[ aPrimaryCol ]) { delete pBody[ aPrimaryCol ] }                                                // .(10315.13.1 RAM aPrimaryCol can't be part of body)
+        if (pBody[ aPrimaryCol ]) { delete pBody[ aPrimaryCol ] }                                                     // .(10315.13.1 RAM aPrimaryCol can't be part of body)
 
-//             pModel.update( req.body,    { where: { id: id } } )
-               pModel.update(  pBody,    { where: pWhere } )                                                        // .(10418.08.2 RAM Instead of this: { id: id } )
+//          ------------------------------------------------------------------------------
+
+        if (pBody.password) {                                                                                         // .(11114.05.1 Beg RAM Password is required)
+
+        var bcrypt          =  require( 'bcryptjs' );                                                                 // .(11114.05.2 Beg RAM Gotta encrypt password for users)
+        var aPassword       =  pBody.password
+        var aSalt_inTransit = '$2a$04$qy3HhHlVJT/wUB364EVjmu'                                                         // .(10416.04.1 RAM Need this for bcrypt.hash to match).(11113.01.1 RAM Was: aSalt)
+        var aSalt_atRest    =  8                                                                                      // .(11113.01.2 RAM For DB storage)
+
+        if (aPassword.match( /^\$(.){50,60}/ ) == null) {                                                             // .(11113.01.3 Beg RAM HASH it if not already).(11114.04.1 RAM was: {59}, could be {50} as it means at least)
+                                         trace( `    Encrypting Password: '${ aPassword }' (un-encrypted)` )          // .(11114.05.3 RAM More info)
+            aPassword       =  bcrypt.hashSync( aPassword, aSalt_inTransit )
+//                                       trace( `                     to: '${ aPassword }' (encrypted InTransit)` )   // .(11114.05.4)
+        } else {
+//                                       trace( `     Receiving Password: '${ aPassword }' (encrypted InTransit)` )   // .(11114.05.5)
+            }                                                                                                         // .(11113.01.3 End)
+            aPassword       =  bcrypt.hashSync( aPassword, aSalt_atRest ); pBody.password = aPassword                 // .(10416.04.9 RAM But needs to be encrypted again to go into the DB).(11113.01.5 RAM was: 8)
+                                         trace( `     to be stored in DB: '${ aPassword }' (encrypted atRest)` )      // .(11114.06.2)
+            }                                                                                                         // .(11114.05.1 End)
+//          ---------------------------------------------------------------------------------
+
+//             pModel.update(  req.body, { where: { id: id } } )
+               pModel.update(  pBody,    { where: pWhere } )                                                          // .(10418.08.2 RAM Instead of this: { id: id } )
                      .then(    ( )   =>  { return pModel.findByPk( id ) } )
-                     .then(    pData =>  {                                                                          // .(10906.05.4 RAM pData is pRow returned by pModel.findByPk, not pData returned by Sequelize) 
+                     .then(    pData =>  {                                                                            // .(10906.05.4 RAM pData is pRow returned by pModel.findByPk, not pData returned by Sequelize) 
                            if (pData)    { res.send( pData.toJSON() );  }
-                             else {        sndError( '',   `    Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.` ); } } )
+                             else {        sndError( '',   `    Cannot update record with ${aPrimaryCol}=${id} for table ${aModel}.`    ); } } )
                      .catch(   pErr  =>  {
                                            sndError( pErr, `    Error updating record with ${aPrimaryCol}=${id} for table ${aModel}.`, res ) } );
             } // eof `${aFName}.updateOne`
@@ -222,16 +243,16 @@
 //    UpdateOne2 (ie PUT) Controller
 //    -----------------------------------------------------------------------------------------
 
-          , updateOne2      :  function updateOne( req, res ) { trace( `\n${req.params.id}` )                    // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
+          , updateOne2      :  function updateOne( req, res ) { trace( `\nUpdating ${req.params.id}` )                // .(10314.08.6 RAM Add UpdateOne Controller for React-Admin)
 
-        var id             =   req.params.id;
-        if (req.body.id) {     delete req.body.id }                                                             // .(10315.13.1 RAM id can't be part of body)
+        var id              =  req.params.id;
+        if (req.body.id) {     delete req.body.id }                                                                   // .(10315.13.1 RAM id can't be part of body)
 
             pModel.update(     req.body, { where: { id: id } } )
-     .then( ( )   => {         return  pModel.findByPk( id )      } )
-     .then( pData => {
-                               res.send( pData.toJSON() );   } )                                                // .(10315.14.1 RAM Added .toJSON())
-    .catch( pErr  => {
+                  .then( ( )   => {         return  pModel.findByPk( id )      } )
+                  .then( pData => {
+                               res.send( pData.toJSON() );   } )                                                      // .(10315.14.1 RAM Added .toJSON())
+                  .catch( pErr  => {
                                res.status( 500 ).send( { message: `    Error updating id: ${id}.\n ${pErr}` } ); } );
             } // eof updateOne
 //          ------------------------------------------------------------------
@@ -239,23 +260,23 @@
 //    Delete Controller
 //    -----------------------------------------------------------------------------------------
 
-          , deleteOne       :  function deleteOne(    req, res ) { trace( `\n${aModel}.deleteOne`)
+          , deleteOne       :  function deleteOne(    req, res ) { trace( `\nDeleting ${aModel}`)
 
                var pWhere   =  { }
 
-               var aSrchVal =  req.query[ aColToSearch || null ];                                                 // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
-               if (aSrchVal) {                                                                                      // .(10418.03.5)
-                   pWhere[ aColToSearch ] = aSrchVal; aSearch=`${aColToSearch}='${aSrchVal}''`                            // .(10418.03.6)
+               var aSrchVal =  req.query[ aColToSearch || null ];                                                     // .(10109.03.4).(10418.03.4 RAM Was aPrimaryCol and aPrimaryVal)
+               if (aSrchVal) {                                                                                        // .(10418.03.5)
+                   pWhere[ aColToSearch ] = aSrchVal; aSearch=`${aColToSearch}='${aSrchVal}''`                        // .(10418.03.6)
 
                } else {
 
                var id       =  req.params.id;
                if (id.match( /^[0-9]+$/ )) {
-                   pWhere[ aPrimaryCol  ] = id;       aSearch=`${aPrimaryCol}=${id}`                                    // .(10418.08.3 RAM Will this work?)
-          } else { pWhere[ aColToSearch ] = id;       aSearch=`${aColToSearch}='${id}'`                                  // .(10418.08.3 RAM Will this work?)
+                   pWhere[ aPrimaryCol  ] = id;       aSearch=`${aPrimaryCol}=${id}`                                  // .(10418.08.3 RAM Will this work?)
+          } else { pWhere[ aColToSearch ] = id;       aSearch=`${aColToSearch}='${id}'`                               // .(10418.08.3 RAM Will this work?)
                }   }   
 
-                   pModel.destroy( { where:  pWhere } )                                                                // .(10418.08.4 RAM Instead of this: { id: id } )
+                   pModel.destroy( { where:  pWhere } )                                                               // .(10418.08.4 RAM Instead of this: { id: id } )
 
                          .then(   nNum  => { if (nNum == 1) {
                                              res.send( { message: `    Record for ${aSearch} was deleted successfully from table ${aModel}!`,  id: id } );                 // .(11109.06.1 RAM Added id).(11113.10.1 RAM Added it to message)
@@ -282,7 +303,7 @@
 //    DeleteAll Controller
 //    -----------------------------------------------------------------------------------------
 
-          , deleteAll       :  function deleteAll(    req, res ) { trace( `${aModel}.deleteAll`)
+          , deleteAll       :  function deleteAll(    req, res ) { trace( `Deleting All ${aModel}s`)
 
                                              res.send( { message: `All records for table ${aModel} would be deleted successfully!` });
                                          process.exit()
