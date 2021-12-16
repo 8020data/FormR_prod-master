@@ -1,4 +1,4 @@
-DROP DATABASE `rauth` ;
+DROP DATABASE IF EXISTS `rauth` ;
 CREATE SCHEMA `rauth` ;
 USE `rauth` ;
 

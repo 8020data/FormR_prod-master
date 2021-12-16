@@ -1,4 +1,4 @@
-DROP DATABASE `world` ;
+DROP DATABASE IF EXISTS `world` ;
 CREATE SCHEMA `world` ;
 USE `world` ;
 
