@@ -2,23 +2,9 @@
   "name": "nodejs-express-sequelize-mysql",
   "version": "0.1.5",
   "description": "Installs NodeJS server modules for developing API apps with Express, Sequelize & MySQL",
-  "main": "server.js",
-  "scripts": {
-    "start": "echo npm ERROR: * You must be in an app folder to start app",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "api",
-    "authentication",
-    "express",
-    "jwt",
-    "mysql",
-    "nodejs",
-    "rest",
-    "sequelize"
-  ],
   "author": "8020data",
   "license": "ISC",
+  "main": "server.js",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -31,5 +17,9 @@
     "mysql2": "^2.0.2",
     "sequelize": "^5.21.2",
     "tedious": "^9.2.1"
+  },
+  "scripts": {
+    "start": "echo npm ERROR: * You must be in an app folder to start app",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
