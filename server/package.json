@@ -1,7 +1,7 @@
 {
   "name": "nodejs-express-sequelize-mysql",
   "version": "0.1.5",
-  "description": "Node.js Rest Apis with Express, Sequelize & MySQL",
+  "description": "Installs NodeJS server modules for developing API apps with Express, Sequelize & MySQL",
   "main": "server.js",
   "scripts": {
     "start": "echo npm ERROR: * You must be in an app folder to start app",
@@ -17,7 +17,7 @@
     "rest",
     "sequelize"
   ],
-  "author": "bezkoder",
+  "author": "8020data",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
